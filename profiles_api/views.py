@@ -57,10 +57,12 @@ class HelloApiView(APIView):
 class HelloViewSet(viewsets.ViewSet):
     """Test API ViewSet"""
 
+    serializer_class = serializers.HelloSerializer
+
     def list(self, request):
         """ Return a Hello Message. """
         a_viewset = [
-        'ueses actions (list, create, retrieve, update, partial_update)',
+        'ueses actions (list, create, retrieve, update, partial_update,destroy)',
         'Automaticaly mapps to URLs using Routers',
         'Provides more functionality with less code.',
         ]
@@ -68,17 +70,29 @@ class HelloViewSet(viewsets.ViewSet):
         return Response({'message':'Hello', 'a_viewset': a_viewset})
 
     def create(self, request):
+        """Create a new Hello Message"""
+        serializer = serializers.HelloSerializer(data=request.data)
+        if serializer.is_valid():
+            name = serializer.data.get('name')
+            message = 'Hello {0}'.format('name')
+            return Response({'message':message})
 
-        return Response({'message':'create' })
+        else:
+            return Response(serializer.errors,
+            status = status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request):
+    def retrieve(self, request, pk=None):
+        """Handels getting an object by its ID"""
+        return Response({'http_method': 'GET' })
 
-        return Response({'message':'retrieve' })
+    def update(self, request, pk=None):
+        """Handels updating an Object  """
+        return Response({'http_method':'PUT' })
 
-    def update(self, request):
+    def partial_update(self, request, pk=None):
+        """Handels updating part of an Object """
+        return Response({'http_method':'PATCH' })
 
-        return Response({'message':'update' })
-
-    def partial_update(self, request):
-
-        return Response({'message':'partial_update' })
+    def destroy(self, request, pk=None):
+        """ Handels removing an Object"""
+        return Response({'http_method':'DELETE' })
