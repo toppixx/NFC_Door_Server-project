@@ -4,9 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 
 from . import serializers
 from . import models
+from . import permissions
 # Create your views here.
 
 class HelloApiView(APIView):
@@ -104,3 +106,5 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
     serializer_class = serializers.UserProfileSerializer
     queryset = models.UserProfile.objects.all()
+    authentification_classes = (TokenAuthentication,) # ...tion,  | , is importend becouse defines variable as tople
+    permission_classes = (permissions.UpdateOwnProfile,) #same here , to enable multiple authentification/permission classes
