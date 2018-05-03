@@ -37,6 +37,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    nfc_tag = models.TextField()
 
     objects = UserProfileManager()
 
@@ -65,3 +66,7 @@ class ProfileFeedItem(models.Model):
     def __str__(self):
         """Return model as a String"""
         return self.status_text
+
+
+class DoorAccesControll(models.Model):
+    """model that stores infromation about a Door """

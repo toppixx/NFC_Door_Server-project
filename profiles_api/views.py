@@ -66,6 +66,8 @@ class HelloViewSet(viewsets.ViewSet):
     """Test API ViewSet"""
 
     serializer_class = serializers.HelloSerializer
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (permissions.UpdateOwnProfile, IsAuthenticated )
 
     def list(self, request):
         """ Return a Hello Message. """
