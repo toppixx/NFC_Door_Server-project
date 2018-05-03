@@ -15,7 +15,6 @@ class UpdateOwnProfile(permissions.BasePermission):
         print(request.user.id)
         print(obj.id == request.user.id)
         print (request.user.is_authenticated)
-        return request.user.is_authenticated
         return obj.id == request.user.id
 
 

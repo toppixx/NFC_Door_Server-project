@@ -112,8 +112,13 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
     serializer_class = serializers.UserProfileSerializer
     queryset = models.UserProfile.objects.all()
-    authentification_classes = (TokenAuthentication, IsAuthenticated, ) # ...tion,  | , is importend becouse defines variable as tople
-    permission_classes = (permissions.UpdateOwnProfile, ) #same here , to enable multiple authentification/permission classes
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (permissions.UpdateOwnProfile, IsAuthenticated )
+
+    #serializer_class = serializers.UserProfileSerializer
+    #queryset = models.UserProfile.objects.all()
+    #authentification_classes = (TokenAuthentication ) # ...tion,  | , is importend becouse defines variable as tople
+    #permission_classes = (permissions.UpdateOwnProfile, IsAuthenticatedOrReadOnly, ) #same here , to enable multiple authentification/permission classes
     filter_backends = (filters.SearchFilter, )
     search_fields=('name', 'email',)
 
@@ -132,9 +137,9 @@ class LoginViewSet(viewsets.ViewSet):
 class UserProfileFeedViewSet(viewsets.ModelViewSet):
     """Handels creating, reading and updating profile feed Items."""
 
-    authentication_classes = (TokenAuthentication, )
     serializer_class = serializers.ProfileFeedItemSerializer
     queryset = models.ProfileFeedItem.objects.all()
+    authentication_classes = (TokenAuthentication, )
     permission_classes = (permissions.PostOwnStatus, IsAuthenticated, )
 
 
