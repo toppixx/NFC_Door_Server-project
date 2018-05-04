@@ -37,7 +37,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    nfc_tag = models.TextField()
+    nfc_tag_list = models.TextField()
 
     objects = UserProfileManager()
 
@@ -67,6 +67,13 @@ class ProfileFeedItem(models.Model):
         """Return model as a String"""
         return self.status_text
 
+class DoorAccesControll(AbstractBaseUser):
+    """model that stores infromation about doof access controll"""
+    nfc_tag = models.TextField()
+    #def askfor_access(self):
+    #    """Used to get a users full name."""
+    #    return self.name
 
-class DoorAccesControll(models.Model):
-    """model that stores infromation about a Door """
+    def __str__(self):
+        """django useses this when it need to convert the object to a string"""
+        return "doocaccesscontroll --str-- "

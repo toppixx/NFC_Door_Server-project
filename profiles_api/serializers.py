@@ -28,12 +28,24 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
         return user
 
-
 class ProfileFeedItemSerializer(serializers.ModelSerializer):
     """A serializer for profile feed Items."""
 
     class Meta:
         model= models.ProfileFeedItem
-        fields = ('id', 'user_profile', 'status_text', 'created_on')
+        fields = ('id', 'user_profile', 'status_text', 'created_on', 'nfc_tag_list')
         extra_kwargs ={'user_profile':{'read_only':True}}
-        
+
+
+class DoorAccesControllSerializer(serializers.ModelSerializer):
+    """A serializer for door access controll."""
+    nfc_tag =  serializers.CharField(max_length=255)
+
+    class Meta:
+        model= models.DoorAccesControll
+        fields = ('id', 'nfc_tag')
+        #extra_kwargs ={'user_profile':{'read_only':True}}
+
+    #def create(self, validated_data):
+    #    print("valid_data['nfc_tag']=="+validated_data['nfc_tag'])
+    #    return validated_data['nfc_tag']==False ## TODO: compare to all nfc_tag listed for the door user

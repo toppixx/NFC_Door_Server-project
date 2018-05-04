@@ -10,11 +10,6 @@ class UpdateOwnProfile(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        print(obj.id)
-        print(request.user)
-        print(request.user.id)
-        print(obj.id == request.user.id)
-        print (request.user.is_authenticated)
         return obj.id == request.user.id
 
 
@@ -24,13 +19,16 @@ class PostOwnStatus(permissions.BasePermission):
     def has_object_permission(self,request,view,obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        print(obj.id)
-        print(obj.user_profile)
 
-        print(obj.status_text)
+        return obj.user_profile.id == request.user.id
 
-        print(obj.created_on)
-        print(request.user.id)
+class DoorAccesControll(permissions.BasePermission):
+    """Allow useres to access a door"""
 
+    def has_object_permission(self,request,view,obj):
+        """Check user is trying to get acces to a door:"""
+
+        if request.method in permissions.SAFE_METHODS:
+            return True
 
         return obj.user_profile.id == request.user.id
