@@ -175,57 +175,19 @@ class DoorAccesControllViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         """Creates a door access query"""
-        #serializer = serializers.DoorAccesControllSerializer(data=request.data)
-        #print(request)
+
         serializer = serializers.DoorAccesControllSerializer(data=request.data)
 
         if serializer.is_valid():
-            #print('serializer valid!')
-            #print(serializer)
             nfc_tag = serializer.data.get('nfc_tag')
+            nfc_tag_list = json.loads(request.user.nfc_tag_list)['nfc_tag_list']
             access_flag = False
-            #print(nfc_tag)
-            #print("0")
-            #print(request.user)
-            #print(request.user.nfc_tag_list)
-            nfc_tag_list = request.user.nfc_tag_list
-            #print("1")
-            #print(nfc_tag_list)
-            #print("2")
-            nfc_tag_list = json.loads(nfc_tag_list)
-            #print(nfc_tag_list)
-            #### TODO: get reali json tag_id and compare
-            #print(nfc_tag_list['nfc_tag_list'])
-            #print('now')
-            nfc_tag_list = nfc_tag_list['nfc_tag_list']
-            #print(nfc_tag_list[0])
-            #print(nfc_tag_list[1])
-            #print(nfc_tag_list[2])
-            #print(nfc_tag_list[0]['nfc_tag'])
-            for u in nfc_tag_list:
-                if u['nfc_tag'] == nfc_tag:
-                    print('nfc tagg machted')
-                    access_flag = True
+            if nfc_tag_list:
+                for u in nfc_tag_list:
+                    if u['nfc_tag'] == nfc_tag:
+                        print('nfc tagg machted')
+                        access_flag = True
 
-            ###nfc_tag_list = json.dumps(nfc_tag_list)
-            ###print(nfc_tag_list)
-
-            #if 'nfc_tag' in nfc_tag_list:
-            #    print('found nfc_tag in nfc_tag_list')
-            #    for c in nfc_tag_list['nfc_tag']:
-            #        if c == nfc_tag:
-            #            print('nfc_tag mached')
-            #            break;
-                    #found = models.DoorAccesControll.objects.all()#filter(data__icontains='"nfc_tag": "{}"'.format(nfc_tag))
-
-            #print(found)
-            #print(ObtainAuthToken().post(request))
-            #for i in user.nfc_tag_list[].length
-                #if nfc_tag == user.nfc_tag_list[i]
-                    #access_flag = True
-            #items = Item.objects.filter(acct__active=1, acct__user=request.user)
-            #print(items)
-            #print(nfc_tag+"==serializer.data.get('nfc_tag')")
             return Response({'access_flag':access_flag})
 
         else:
