@@ -38,7 +38,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     nfc_tag_list = models.TextField()
-
+    nfc_tag_list_group = models.TextField()
     objects = UserProfileManager()
 
     USERNAME_FIELD = 'email'
@@ -67,13 +67,22 @@ class ProfileFeedItem(models.Model):
         """Return model as a String"""
         return self.status_text
 
-class DoorAccesControll(AbstractBaseUser):
-    """model that stores infromation about doof access controll"""
-    nfc_tag = models.TextField()
-    #def askfor_access(self):
-    #    """Used to get a users full name."""
-    #    return self.name
 
-    def __str__(self):
-        """django useses this when it need to convert the object to a string"""
-        return "doocaccesscontroll --str-- "
+
+class DoorNfcTagModel(models.Model):
+    """A NFC tag of a spezifik door"""
+    door_name = models.CharField(max_length=15)
+    door_nfc_tag = models.TextField()
+
+#DOOR_NFC_LIST = models.DoorNfcTagModel.objects.all()
+
+#class DoorNfcListModel(AbstractBaseUser):
+class DoorNfcListModel(models.Model):
+    """ a List of all NFC tag door elements"""
+    door_nfc_list = models.ForeignKey('DoorNfcTagModel', on_delete=models.CASCADE)
+    #door_nfc_list = models.OneToManyField(models.DoorNfcTagModel.objects.all())
+    #door_nfc_list = models.CharField(max_length = 255, choices=DOOR_NFC_LIST, default = 1111)
+
+class DoorNfcGroupModel(models.Model):
+    group_name = models.CharField(max_length=30)
+    door_nfc_tag_list = models.TextField()

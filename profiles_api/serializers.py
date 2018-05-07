@@ -42,8 +42,8 @@ class DoorAccesControllSerializer(serializers.ModelSerializer):
     nfc_tag =  serializers.CharField(max_length=255)
 
     class Meta:
-        model= models.DoorAccesControll
-        fields = ('id', 'nfc_tag')
+        model= models.DoorNfcTagModel
+        fields = ('id', 'door_nfc_tag', 'door_name')
         #extra_kwargs ={'user_profile':{'read_only':True}}
 
     #def create(self, validated_data):
