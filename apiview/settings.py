@@ -25,7 +25,7 @@ SECRET_KEY = '#cj_tak)z&*4xu*(bwa=t+ry%0eb@xb^gnxr$2afvo1cn@#%!_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.208.153']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -130,3 +130,9 @@ AUTH_USER_MODEL = "profiles_api.UserProfile"
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
