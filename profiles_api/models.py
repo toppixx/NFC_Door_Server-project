@@ -74,7 +74,7 @@ class ProfileFeedItem(models.Model):
 class DoorNfcTagModel(models.Model):
     """A NFC tag of a spezifik door"""
     door_name = models.CharField(max_length=15)
-    door_nfc_tag = models.TextField()
+    nfc_tag = models.CharField(max_length=255)
 
 #DOOR_NFC_LIST = models.DoorNfcTagModel.objects.all()
 

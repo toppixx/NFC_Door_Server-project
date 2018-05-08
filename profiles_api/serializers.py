@@ -62,11 +62,12 @@ class ProfileFeedItemSerializer(serializers.ModelSerializer):
 
 class DoorAccesControllSerializer(serializers.ModelSerializer):
     """A serializer for door access controll."""
-    nfc_tag =  serializers.CharField(max_length=255)
 
     class Meta:
         model= models.DoorNfcTagModel
-        fields = ('id', 'door_nfc_tag', 'door_name')
+        fields = ('id', 'nfc_tag')
+        extra_kwargs ={'door_nfc_tag':{'write_only':True}}
+
         #extra_kwargs ={'user_profile':{'read_only':True}}
 
     #def create(self, validated_data):

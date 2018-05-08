@@ -177,9 +177,7 @@ class DoorAccesControllViewSet(viewsets.ModelViewSet):
     def list(self, request):
         """ Return a True or False if nfc_tag is authenticated for that door. """
         a_viewset = [
-        'ueses actions (create)',
-        'Automaticaly mapps to URLs using Routers',
-        'Provides more functionality with less code.',
+        'get acces to the door',
         ]
 
         return Response({'a_viewset': a_viewset})
@@ -187,15 +185,19 @@ class DoorAccesControllViewSet(viewsets.ModelViewSet):
     def create(self, request):
         """Creates a door access query"""
 
-        serializer = serializers.DoorNfcTagModel(data=request.data)
-
+        serializer = serializers.DoorAccesControllSerializer(data=request.data)
+        print(request.data)
         if serializer.is_valid():
-            nfc_tag = serializer.data.get('door_nfc_tag')
+            #nfc_tag = serializer.data.get('door_nfc_tag')
+            nfc_tag = request.data.get('nfc_tag')
+            print(nfc_tag)
             nfc_tag_list = json.loads(request.user.nfc_tag_list)['nfc_tag_list']
             access_flag = False
-            if nfc_tag_list:
+            if nfc_tag_list and nfc_tag:
                 for u in nfc_tag_list:
-                    if u['door_nfc_tag'] == nfc_tag:
+                    print(u)
+                    if u['nfc_tag'] == nfc_tag:
+                        print(u['nfc_tag']+"=="+nfc_tag)
                         print('nfc tagg machted')
                         access_flag = True
 
