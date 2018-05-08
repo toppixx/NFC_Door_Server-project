@@ -12,5 +12,5 @@ router.register('access', profiles_api_views.DoorAccesControllViewSet)
 
 urlpatterns = [
     path('hello-view', profiles_api_views.HelloApiView.as_view()),
-    #path('',include(router.urls))
+    path('',include(router.urls))
 ]
