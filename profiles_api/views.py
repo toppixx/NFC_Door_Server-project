@@ -113,16 +113,26 @@ class HelloViewSet(viewsets.ViewSet):
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):
-    """ Handels creating,  reading and updating profiles"""
+    """Handels reading and updating profiles"""
 
     serializer_class = serializers.UserProfileSerializer
     queryset = models.UserProfile.objects.all()
     authentication_classes = (TokenAuthentication, )
     permission_classes = (permissions.UpdateOwnProfile, IsAuthenticated )
 
-    filter_backends = (filters.SearchFilter, )
-    search_fields=('name', 'email',)
+    #filter_backends = (filters.SearchFilter, )
+    #search_fields=('name', 'email',)
 
+class CreateNewUserViewSet(viewsets.ModelViewSet):
+    """ Handels creating profiles"""
+
+    serializer_class = serializers.CreateNewUserSerializer
+    queryset = models.UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (permissions.CreateNewUser, IsAuthenticated )
+
+    #filter_backends = (filters.SearchFilter, )
+    #search_fields=('name', 'email',)
 
 class LoginViewSet(viewsets.ViewSet):
     """Checks email and password and returns an auth token."""
@@ -131,12 +141,13 @@ class LoginViewSet(viewsets.ViewSet):
 
     def create(self,request):
         """Use the ObtainAuthToken APIView to validate and create a token"""
-
+        print(request.data)
+#        print(request.Password)
         return ObtainAuthToken().post(request)
 
     def retrieve(self, request, pk=None):
         """Handels getting an object by its ID"""
-        print(request)
+        print(request.data)
         return Response({'http_method': 'POST' })
 
 

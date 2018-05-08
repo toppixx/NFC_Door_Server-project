@@ -1,5 +1,18 @@
 from rest_framework import permissions
 
+class CreateNewUser(permissions.BasePermission):
+    """Allow staff useres to create new user profile"""
+
+    def has_object_permission(self,request,view,obj):
+        """Check if accessing user is staff:"""
+
+        if request.method in permissions.SAFE_METHODS:
+            print(request.user.is_staff)
+            print('i was herer first')
+            return True
+        print(request.user.is_staff)
+        print('i was herer last')
+        return request.user.is_staff #TODO not shure if thats right
 
 class UpdateOwnProfile(permissions.BasePermission):
     """Allow useres to edit their own profile"""
@@ -8,8 +21,9 @@ class UpdateOwnProfile(permissions.BasePermission):
         """Check user is trying to edit their own profile:"""
 
         if request.method in permissions.SAFE_METHODS:
+            print('safe Methods True')
             return True
-
+        print('safe Methods False')
         return obj.id == request.user.id
 
 
