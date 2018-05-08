@@ -131,8 +131,7 @@ AUTH_USER_MODEL = "profiles_api.UserProfile"
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-
 try:
-    from .local_settings import *
-except ImportError:
+    from local_settings import *
+except:
     pass
