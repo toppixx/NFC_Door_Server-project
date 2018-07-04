@@ -97,7 +97,7 @@ class DoorNfcGroupModel(models.Model):
 class NfcDoor(models.Model):
     """Model of a Door"""
     nameOfDoor   = models.CharField(max_length=255)
-    doorUUID     = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    doorUUID     = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     #doorGroup    = models.ForeignKey(NfcListOfDoors, on_delete=models.CASCADE)
     #doorGroup    = models.ForeignKey(NfcDoorGroup, on_delete=models.CASCADE)#, related_name='doorGroup_NfcDoor')
     def __str__(self):
@@ -110,6 +110,7 @@ class NfcDoorGroup(models.Model):
     """Model of a Groups for multiple doors or groups"""
     nameOfDoorGroup     = models.CharField(max_length=255)
     ##listOfADoorGroup    = models.ManyToManyField(listOfADoorGroup, through='Visit')
+    #
     listOfDoors = models.ManyToManyField(NfcDoor, related_name = 'listOfDoors_NfcDoorGroup')
     #listOfGroups = models.ManyToManyField(NfcDoorGroup, related_name = 'listOfDoorGroups_NfcDoorGroup', null=True)
     def __str__(self):
@@ -128,7 +129,7 @@ class NfcListOfDoors(models.Model):
     """Model of a List of all Doors"""
     nameOfDoorList = models.CharField(max_length=255)
     #listOfDoors  =  models.ManyToManyField(NfcDoor, through='Visit')
-    listOfDoors = models.ManyToManyField(NfcDoor, related_name = 'listOfDoors_NfcListOfDoors')
+    #listOfDoors = models.ManyToManyField(NfcDoor,  through='NfcListOfUsers',related_name = 'listOfDoors_NfcListOfDoors')
     def __str__(self):
         """django useses this when it need to convert the object to a string"""
         return self.nameOfDoorList
@@ -146,24 +147,29 @@ class NfcMasterListOfKeys(models.Model):
     #     super(NfcMasterListOfKeys, self).__init__(self, *args, **kwargs)
 
     def __str__(self):
+        self.save()
         """django useses this when it need to convert the object to a string"""
         return self.nameOfMasterKeyList
-
-class NfcListOfKeys(models.Model):
-    nameOfKeyList = models.CharField(max_length=255);
-    """Model of a List of Keys"""
-    masterListOfKeys  = models.ForeignKey(NfcMasterListOfKeys, on_delete=models.CASCADE, related_name = 'MasterListOfKeys_NfcListOfKeys')
-    #list         = models.ManyToManyField(NfcKey, through='NfcVisitListOfKeys')
-    def __str__(self):
-        """django useses this when it need to convert the object to a string"""
-        return self.nameOfKeyList
+#
+# class NfcListOfKeys(models.Model):
+#     nameOfKeyList = models.CharField(max_length=255);
+#     """Model of a List of Keys"""
+#     #masterListOfKeys  = models.ForeignKey(NfcMasterListOfKeys, on_delete=models.CASCADE, related_name = 'MasterListOfKeys_NfcListOfKeys')
+#     #list         = models.ManyToManyField(NfcKey, through='NfcVisitListOfKeys')
+#     def __str__(self):
+#         """django useses this when it need to convert the object to a string"""
+#         return self.nameOfKeyList
 
 class NfcKey(models.Model):
     """Model for a NfcKey"""
-    keyUUID      = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    keyUUID      = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     AESEncryptKey= models.BinaryField(max_length=128, default=urandom(128))
-    listOfKeys   = models.ForeignKey(NfcListOfKeys, on_delete=models.CASCADE)#, related_name='ListOfKeys_NfcKey')
+    #listOfKeys   = models.ForeignKey(NfcListOfKeys, on_delete=models.CASCADE)#, related_name='ListOfKeys_NfcKey')
     masterListOfKeys = models.ForeignKey(NfcMasterListOfKeys, on_delete=models.CASCADE)#, related_name = 'MasterListOfKeys_NfcKey')
+    def create(self):
+        """django useses this when it need to create a new NfcKey object"""
+        return self
+
     def __str__(self):
         """django useses this when it need to convert the object to a string"""
         return str(self.keyUUID)
@@ -198,9 +204,10 @@ class NfcListOfUsers(models.Model):
     """Model of a List of all Users"""
     userName     = models.CharField(max_length=255)
 
-    listOfDoorGroups = models.ForeignKey(NfcDoorGroup, on_delete=models.CASCADE)#, related_name='DoorGroup_NfcListOfUsers')
-    listOfDoors  = models.ForeignKey(NfcListOfDoors, on_delete=models.CASCADE)#, related_name = 'ListOfDoors_NfcListOfUsers')
-    listOfKeys   = models.ForeignKey(NfcListOfKeys, on_delete=models.CASCADE)#, related_name = 'ListOfKeys_NfcListOfUsers')
+    listOfDoorGroups = models.ManyToManyField(NfcDoorGroup, related_name='DoorGroup_NfcListOfUsers')
+    listOfDoors  = models.ManyToManyField(NfcDoor, related_name = 'ListOfDoors_NfcListOfUsers')
+    #listOfKeys   = models.ForeignKey(NfcListOfKeys, on_delete=models.CASCADE, related_name = 'ListOfKeys_NfcListOfUsers')
+    #nfcKey = NfcKey().save()
 
     TDAT         = models.TextField(max_length=256, default=get_random_string(length=256),editable=False)
     accesingUDID = models.TextField(max_length=256, default=get_random_string(length=256),editable=False)

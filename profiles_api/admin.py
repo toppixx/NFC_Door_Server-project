@@ -15,7 +15,7 @@ admin.site.register(models.NfcListOfDoors)
 admin.site.register(models.NfcDoor)
 
 admin.site.register(models.NfcMasterListOfKeys)
-admin.site.register(models.NfcListOfKeys)
+#admin.site.register(models.NfcListOfKeys)
 admin.site.register(models.NfcKey)
 
 #NfcMasterListOfAllDoorGroups
