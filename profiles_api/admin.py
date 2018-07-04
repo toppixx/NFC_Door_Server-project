@@ -3,10 +3,31 @@ from . import models
 from .models import DoorNfcTagModel
 
 # Register your models here.
-admin.site.register(models.UserProfile)
-admin.site.register(models.DoorNfcListModel)
-admin.site.register(models.DoorNfcTagModel)
-admin.site.register(models.DoorNfcGroupModel)
+#admin.site.register(models.UserProfile)
+#admin.site.register(models.DoorNfcListModel)
+#admin.site.register(models.DoorNfcTagModel)
+#admin.site.register(models.DoorNfcGroupModel)
+admin.site.register(models.NfcListOfUsers)
+
+admin.site.register(models.NfcMasterListOfAllDoorGroups)
+admin.site.register(models.NfcDoorGroup)
+admin.site.register(models.NfcListOfDoors)
+admin.site.register(models.NfcDoor)
+
+admin.site.register(models.NfcMasterListOfKeys)
+admin.site.register(models.NfcListOfKeys)
+admin.site.register(models.NfcKey)
+
+#NfcMasterListOfAllDoorGroups
+#NfcDoorGroup
+#NfcListOfDoors
+#NfcDoor
+#NfcMasterListOfKeys
+#NfcListOfKeys
+#NfcKey
+#NfcListOfUsers
+
+
 
 #class FlatPageAdmin(admin.ModelAdmin):#
 #    fieldsets=(#
