@@ -9,12 +9,12 @@ from .models import DoorNfcTagModel
 #admin.site.register(models.DoorNfcGroupModel)
 admin.site.register(models.NfcListOfUsers)
 
-admin.site.register(models.NfcMasterListOfAllDoorGroups)
+#admin.site.register(models.NfcMasterListOfAllDoorGroups)
 admin.site.register(models.NfcDoorGroup)
-admin.site.register(models.NfcListOfDoors)
+#admin.site.register(models.NfcListOfDoors)
 admin.site.register(models.NfcDoor)
 
-admin.site.register(models.NfcMasterListOfKeys)
+#admin.site.register(models.NfcMasterListOfKeys)
 #admin.site.register(models.NfcListOfKeys)
 admin.site.register(models.NfcKey)
 
