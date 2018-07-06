@@ -114,9 +114,11 @@ class NfcKey(models.Model):
         return urandom(10)
 
     """Model for a NfcKey"""
-    keyName     = models.CharField(max_length=255)
+    keyName      = models.CharField(max_length=255)
     keyUUID      = models.UUIDField(primary_key=True, default=uuid.uuid4 )#,editable=False)
+    keyUTID      = models.TextField(max_length=64, default=uuid.uuid4 )#,editable=False)
     AESEncryptKey= models.TextField(max_length=32, default=get_random_string(32))
+    accesTrue    = models.TextField(max_length=256, default=get_random_string(256))
 
     def __str__(self):
         """django useses this when it need to convert the object to a string"""
@@ -131,46 +133,42 @@ class NfcListOfUsers(models.Model):
 
 
     def dacRequestP1(self,uuid):
-        self.accessingUUID = uuid;
-        self.TDAT =  get_random_string(256)
+        for i in self.userKeys.all():
+            if i.keyUUID == uuid:
+                self.accessingUUID = uuid;
+                self.TDAT =  get_random_string(256)
         #self.timeStamp = os.timeStamp()
-        self.save()
-        return str(self.TDAT)
+            self.save()
+            return str(self.TDAT)
+        return 'fail'
 
     def dacRequestP2(self, ecUDID):
-        print('\n ecUDID')
-        print(ecUDID)
         for i in self.listOfDoors.all():
             sha256Hash = hashlib.sha256((self.TDAT+str(i.doorUUID)).encode())
             print(str(sha256Hash.hexdigest()))
             if str(ecUDID) == str(sha256Hash.hexdigest()):
                 self.accesingUDID = i.doorUUID
-                print('now it comes')
                 self.encryptionKey = re.sub('-', '',str(i.doorUUID)) #self.accesingUDID
-                print(self.encryptionKey)
-                print(str(i.doorUUID))
                 self.encryptionSalt = urandom(12)
                 self.save()
-
-
-                print('i was bevor the loop')
                 for n in self.userKeys.all():
-                    print('looping')
-                    print(n.keyUUID)
-                    print(self.accessingUUID)
                     if n.keyUUID == self.accessingUUID:
                         aesEncryption = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
-                        print('hey')
-                        test1, test = aesEncryption.encrypt(n.AESEncryptKey)
-                        print('cypher')
-                        print(test1)
-                        print('salt')
-                        print(test)
-                        return test1, test
                         return aesEncryption.encrypt(n.AESEncryptKey)
-
         return 'fail', 'fail'
 
+    def dacRequestP3(self,aesEncryptedNfcPw,aesSalt):
+        #debugStyle
+        aesSalt = aesSalt.encode('utf-8')
+        aesEncryptedNfcPw = aesEncryptedNfcPw.encode('utf-8')
+        #debugStyle End
+        self.encryptionSalt = aesSalt
+        aesDecrypt = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
+        nfcUTID = aesDecrypt.decrypt(aesEncryptedNfcPw, aesSalt)
+        for i in self.userKeys.all():
+            if i.keyUUID == uuid and i.keyUDID == nfcPw:
+                return hashlib.sha256(sef.accesingUDID+self.NfcKey.accesTrue)
+        return 'fail'
 
     userName     = models.CharField(max_length=255)
 
@@ -203,6 +201,6 @@ class NfcDACPhase2(models.Model):
 
 class NfcDACPhase3(models.Model):
     userKeys = models.TextField(max_length=32)
-    aesEncryptedNfcPw = models.BinaryField(max_length=256)
-    aesSalt = models.BinaryField(max_length=96)
+    aesEncryptedNfcPw = models.TextField(max_length=256)
+    aesSalt = models.TextField(max_length=96)
     TDAT3 = models.TextField(max_length=256)

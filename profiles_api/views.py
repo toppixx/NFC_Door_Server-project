@@ -243,15 +243,11 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             uuid = request.data.get('userKeys')
             udid = request.data.get('keyHash')
-            print('\n\n\nhello\n\n\n')
-
             #hash = hashlib.sha256(models.NfcListOfUsers.objects.filter(userKeys=uuid))
             queryset = models.NfcListOfUsers.objects.filter(userKeys=uuid)
             if uuid is not None and udid is not None and queryset:
                 queryset = models.NfcListOfUsers.objects.get(userKeys=uuid)
                 if queryset:
-                    print('\n\n\nhello\n\n\n')
-                    #return Response({'got to the end'})
                     cypher, iv = queryset.dacRequestP2(udid)
                     return Response({'got to the end'})
 
@@ -263,6 +259,20 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
-    """initiates Phase 2 of the Acces Controll"""
+    """initiates Phase 3 of the Acces Controll"""
     serializer_class = serializers.NfcDooorAcContPhase3Serializer
-    queryset = models.NfcListOfUsers.objects.filter(TDAT='asdf')
+    queryset = models.NfcDACPhase3.objects.all()
+
+    def create(self, request, pk=None):
+        serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
+        if serializer.is_valid():
+            uuid = request.data.get('userKeys')
+            aesEncryptedNfcPW = request.data.get('aesEncryptedNfcPw')
+            aesSalt = request.data.get('aesSalt')
+            TDAT3 = request.data.get('TDAT3')
+            if uuid is not None:
+                queryset = models.NfcListOfUsers.objects.filter(userKeys=uuid)
+
+                if  aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None and queryset:
+                    queryset = models.NfcListOfUsers.objects.get(userKeys=uuid)
+                    return queryset.dacRequestP3(aesEncryptedNfcPW, aesSalt)
