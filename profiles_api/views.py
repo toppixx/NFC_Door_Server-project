@@ -17,6 +17,7 @@ from . import models
 from . import permissions
 
 
+
 import json
 # Create your views here.
 
@@ -207,3 +208,61 @@ class DoorAccesControllViewSet(viewsets.ModelViewSet):
             print('serializer not valid')
             return Response(serializer.errors,
             status = status.HTTP_400_BAD_REQUEST)
+
+
+class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
+    """initiates Phase 1 of the Acces Controll"""
+    serializer_class = serializers.NfcDooorAcContPhase1Serializer
+    queryset = models.NfcListOfUsers.objects.filter(TDAT='asdf')
+    def create(self, request, pk=None):
+        serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
+        if serializer.is_valid():
+            uuid = request.data.get('userKeys')
+            queryset = models.NfcListOfUsers.objects.get(userKeys=uuid)
+            if uuid is not None:
+                if queryset :
+                    return Response({'returnToken' : queryset.dacRequestP1(uuid)})
+            return Response({'Error no falid value entered'})
+
+        else:
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request):
+        """ Return a True or False if nfc_tag is authenticated for that door. """
+        a_viewset = [
+        'enter your Key',
+        ]
+        return Response({'message':'Hello', 'a_viewset': a_viewset})
+
+class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
+    """initiates Phase 2 of the Acces Controll"""
+    serializer_class = serializers.NfcDooorAcContPhase2Serializer
+    queryset = models.NfcListOfUsers.objects.filter(TDAT='asdf')
+    def create(self, request, pk=None):
+        serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
+        if serializer.is_valid():
+            uuid = request.data.get('userKeys')
+            udid = request.data.get('keyHash')
+            print('\n\n\nhello\n\n\n')
+
+            #hash = hashlib.sha256(models.NfcListOfUsers.objects.filter(userKeys=uuid))
+            queryset = models.NfcListOfUsers.objects.filter(userKeys=uuid)
+            if uuid is not None and udid is not None and queryset:
+                queryset = models.NfcListOfUsers.objects.get(userKeys=uuid)
+                if queryset:
+                    print('\n\n\nhello\n\n\n')
+                    #return Response({'got to the end'})
+                    cypher, iv = queryset.dacRequestP2(udid)
+                    return Response({'got to the end'})
+
+                    return Response({'returnToken' : queryset.dacRequestP2(udid)})
+
+            return Response({'Error no falid value entered'})
+
+        else:
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
+    """initiates Phase 2 of the Acces Controll"""
+    serializer_class = serializers.NfcDooorAcContPhase3Serializer
+    queryset = models.NfcListOfUsers.objects.filter(TDAT='asdf')
