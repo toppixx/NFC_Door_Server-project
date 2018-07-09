@@ -237,7 +237,7 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
 class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
     """initiates Phase 2 of the Acces Controll"""
     serializer_class = serializers.NfcDooorAcContPhase2Serializer
-    queryset = models.NfcListOfUsers.objects.all()
+    queryset = models.NfcListOfUsers.objects.filter(TDAT='asdfalsjfljeroiqtoiJLKDJFLKJSALKFL')
     def create(self, request, pk=None):
         serializer = serializers.NfcDooorAcContPhase2Serializer(data=request.data)
         if serializer.is_valid():
@@ -261,11 +261,10 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
 class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
     """initiates Phase 3 of the Acces Controll"""
     serializer_class = serializers.NfcDooorAcContPhase3Serializer
-    queryset = models.NfcListOfUsers.objects.all()
+    queryset = models.NfcListOfUsers.objects.filter(TDAT='asdfalsjfljeroiqtoiJLKDJFLKJSALKFL')
 
     def create(self, request, pk=None):
-        #serializer = serializers.NfcDooorAcContPhase3Serializer(data=request.data)
-        print('part 0')
+        serializer = serializers.NfcDooorAcContPhase3Serializer(data=request.data)
         if serializer.is_valid():
             uuid = request.data.get('userKeys')
             aesEncryptedNfcPW = request.data.get('aesEncryptedNfcPw')
