@@ -158,7 +158,7 @@ class NfcListOfUsers(models.Model):
                         return AesCryption.encrypted(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt)
         return 'fail', 'fail'
 
-    def dacRequestP3(self,aesEncryptedNfcPw,aesSalt):
+    def dacRequestP3(self, uuid, aesEncryptedNfcPw,aesSalt):
         #debugStyle
         aesSalt = aesSalt.encode('utf-8')
         aesEncryptedNfcPw = aesEncryptedNfcPw.encode('utf-8')
@@ -166,12 +166,20 @@ class NfcListOfUsers(models.Model):
         self.encryptionSalt = aesSalt
         #aesDecrypt = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
         #nfcUTID = aesDecrypt.decrypt(aesEncryptedNfcPw, aesSalt)
+        print(self)
+        print(uuid)
         for i in self.userKeys.all():
-            if i.keyUUID == uuid:
+            print(i.keyUUID)
+            if re.sub('-', '',str(i.keyUUID)) == uuid:
+                print(re.sub('-', '',str(i.keyUUID)))
                 nfcUTID = AesCryption.decrypt(aesEncryptedNfcPw, self.encryptionKey, self.encryptionSalt)
-                if i.keyUTID == nfcPw:
-                    return 'okay'
+                if i.keyUTID == nfcUTID:
+                    return 'UTID was true'
                     return hashlib.sha256(sef.accesingUDID+self.NfcKey.accesTrue).hexdigest()
+                else:
+                    return 'UTID was false'
+            else:
+                return 'uuid not found'
         return 'fail'
 
     userName     = models.CharField(max_length=255)

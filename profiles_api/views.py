@@ -277,5 +277,6 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
                 if queryset:
                     queryset = models.NfcListOfUsers.objects.get(userKeys=uuid)
                     print('part 3')
-                    return queryset.dacRequestP3(aesEncryptedNfcPW, aesSalt)
+                    return Response({'returnVal' : queryset.dacRequestP3(uuid, aesEncryptedNfcPW, aesSalt)})
+
         return Response({'Error no falid value entered'})
