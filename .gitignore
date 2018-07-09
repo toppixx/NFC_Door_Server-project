@@ -12,5 +12,6 @@ db.sqlite3
 /media
 /static
 /myvenv
+/2myvenv
 /myvenv2
 apiview.sock

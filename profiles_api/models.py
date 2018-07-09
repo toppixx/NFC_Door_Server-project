@@ -153,8 +153,9 @@ class NfcListOfUsers(models.Model):
                 self.save()
                 for n in self.userKeys.all():
                     if n.keyUUID == self.accessingUUID:
-                        aesEncryption = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
-                        return aesEncryption.encrypt(n.AESEncryptKey)
+                        #aesEncryption = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
+                        #return aesEncryption.encrypt(n.AESEncryptKey)
+                        return AesCryption.encrypted(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt)
         return 'fail', 'fail'
 
     def dacRequestP3(self,aesEncryptedNfcPw,aesSalt):
@@ -163,11 +164,14 @@ class NfcListOfUsers(models.Model):
         aesEncryptedNfcPw = aesEncryptedNfcPw.encode('utf-8')
         #debugStyle End
         self.encryptionSalt = aesSalt
-        aesDecrypt = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
-        nfcUTID = aesDecrypt.decrypt(aesEncryptedNfcPw, aesSalt)
+        #aesDecrypt = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
+        #nfcUTID = aesDecrypt.decrypt(aesEncryptedNfcPw, aesSalt)
         for i in self.userKeys.all():
-            if i.keyUUID == uuid and i.keyUDID == nfcPw:
-                return hashlib.sha256(sef.accesingUDID+self.NfcKey.accesTrue)
+            if i.keyUUID == uuid:
+                nfcUTID = AesCryption.decrypt(aesEncryptedNfcPw, self.encryptionKey, self.encryptionSalt)
+                if i.keyUTID == nfcPw:
+                    return 'okay'
+                    return hashlib.sha256(sef.accesingUDID+self.NfcKey.accesTrue).hexdigest()
         return 'fail'
 
     userName     = models.CharField(max_length=255)

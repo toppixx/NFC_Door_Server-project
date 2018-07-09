@@ -213,7 +213,7 @@ class DoorAccesControllViewSet(viewsets.ModelViewSet):
 class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
     """initiates Phase 1 of the Acces Controll"""
     serializer_class = serializers.NfcDooorAcContPhase1Serializer
-    queryset = models.NfcListOfUsers.objects.filter(TDAT='asdf')
+    queryset = models.NfcListOfUsers.objects.all()
     def create(self, request, pk=None):
         serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
         if serializer.is_valid():
@@ -237,9 +237,9 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
 class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
     """initiates Phase 2 of the Acces Controll"""
     serializer_class = serializers.NfcDooorAcContPhase2Serializer
-    queryset = models.NfcListOfUsers.objects.filter(TDAT='asdf')
+    queryset = models.NfcListOfUsers.objects.all()
     def create(self, request, pk=None):
-        serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
+        serializer = serializers.NfcDooorAcContPhase2Serializer(data=request.data)
         if serializer.is_valid():
             uuid = request.data.get('userKeys')
             udid = request.data.get('keyHash')
@@ -261,18 +261,22 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
 class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
     """initiates Phase 3 of the Acces Controll"""
     serializer_class = serializers.NfcDooorAcContPhase3Serializer
-    queryset = models.NfcDACPhase3.objects.all()
+    queryset = models.NfcListOfUsers.objects.all()
 
     def create(self, request, pk=None):
-        serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
+        #serializer = serializers.NfcDooorAcContPhase3Serializer(data=request.data)
+        print('part 0')
         if serializer.is_valid():
             uuid = request.data.get('userKeys')
             aesEncryptedNfcPW = request.data.get('aesEncryptedNfcPw')
             aesSalt = request.data.get('aesSalt')
             TDAT3 = request.data.get('TDAT3')
-            if uuid is not None:
+            print('part 1')
+            if uuid is not None and aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None :
                 queryset = models.NfcListOfUsers.objects.filter(userKeys=uuid)
-
-                if  aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None and queryset:
+                print('part 2')
+                if queryset:
                     queryset = models.NfcListOfUsers.objects.get(userKeys=uuid)
+                    print('part 3')
                     return queryset.dacRequestP3(aesEncryptedNfcPW, aesSalt)
+        return Response({'Error no falid value entered'})
