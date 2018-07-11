@@ -10,6 +10,7 @@ import json
 import hashlib
 import re
 from profiles_api import AesCryption
+import base64
 
 
 
@@ -134,8 +135,8 @@ class NfcListOfUsers(models.Model):
 
     def dacRequestP1(self,uuid):
         for i in self.userKeys.all():
-            if i.keyUUID == uuid:
-                self.accessingUUID = uuid;
+            if re.sub('-', '',str(i.keyUUID)) == re.sub('-', '',str(uuid)):
+                self.accessingUUID = re.sub('-', '',str(uuid))
                 self.TDAT =  get_random_string(256)
         #self.timeStamp = os.timeStamp()
             self.save()
@@ -146,16 +147,20 @@ class NfcListOfUsers(models.Model):
         for i in self.listOfDoors.all():
             sha256Hash = hashlib.sha256((self.TDAT+str(i.doorUUID)).encode())
             print(str(sha256Hash.hexdigest()))
+            print(str(ecUDID))
             if str(ecUDID) == str(sha256Hash.hexdigest()):
-                self.accesingUDID = i.doorUUID
+                print("Strings mached")
+                self.accesingUDID = re.sub('-', '',str(i.doorUUID))
                 self.encryptionKey = re.sub('-', '',str(i.doorUUID)) #self.accesingUDID
-                self.encryptionSalt = urandom(12)
+                self.encryptionSalt = urandom(16)
                 self.save()
                 for n in self.userKeys.all():
-                    if n.keyUUID == self.accessingUUID:
+                    print(n.keyUUID)
+                    print(self.accessingUUID)
+                    if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                         #aesEncryption = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
                         #return aesEncryption.encrypt(n.AESEncryptKey)
-                        return AesCryption.encrypted(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt)
+                        return (str(AesCryption.encrypt(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt)) , base64.b64encode(self.encryptionSalt))
         return 'fail', 'fail'
 
     def dacRequestP3(self, uuid, aesEncryptedNfcPw,aesSalt):
