@@ -249,9 +249,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                 queryset = models.NfcListOfUsers.objects.get(userKeys=uuid)
                 if queryset:
                     cypher, iv = queryset.dacRequestP2(udid)
-                    return Response({'got to the end'})
-
-                    return Response({'returnToken' : queryset.dacRequestP2(udid)})
+                    return Response({'cypher' : cypher, 'iv' : iv})
 
             return Response({'Error no falid value entered'})
 
