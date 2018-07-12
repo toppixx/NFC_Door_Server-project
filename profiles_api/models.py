@@ -145,7 +145,7 @@ class NfcListOfUsers(models.Model):
 
     def dacRequestP2(self, ecUDID):
         for i in self.listOfDoors.all():
-            sha256Hash = hashlib.sha256((self.TDAT+str(i.doorUUID)).encode())
+            sha256Hash = hashlib.sha256((self.TDAT+re.sub('-', '',str(i.doorUUID))).encode())
             print(str(sha256Hash.hexdigest()))
             print(str(ecUDID))
             if str(ecUDID) == str(sha256Hash.hexdigest()):
