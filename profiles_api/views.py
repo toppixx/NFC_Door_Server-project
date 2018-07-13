@@ -243,6 +243,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             uuid = request.data.get('userKeys')
             udid = request.data.get('keyHash')
+            print(udid)
             #hash = hashlib.sha256(models.NfcListOfUsers.objects.filter(userKeys=uuid))
             queryset = models.NfcListOfUsers.objects.filter(userKeys=uuid)
             if uuid is not None and udid is not None and queryset:

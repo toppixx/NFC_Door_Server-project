@@ -11,7 +11,7 @@ import hashlib
 import re
 from profiles_api import AesCryption
 import base64
-
+import codecs
 
 
 
@@ -145,9 +145,32 @@ class NfcListOfUsers(models.Model):
 
     def dacRequestP2(self, ecUDID):
         for i in self.listOfDoors.all():
-            sha256Hash = hashlib.sha256((self.TDAT+re.sub('-', '',str(i.doorUUID))).encode())
+            ecUDID.lower()
+            print("hiere")
+            toHashStr = self.TDAT+re.sub('-', '',str(i.doorUUID))
+            print("plain toHashStr")
+            print(toHashStr)
+            print("hexed")
+            #print(toHashStr.hexdigest())
+            print("".join("{:02x}".format(ord(c)) for c in toHashStr))
+            print(toHashStr)
+            print("\n\r")
+            encToHashStr = (self.TDAT+re.sub('-', '',str(i.doorUUID))).encode()
+
+            print("encoded toHashStr")
+            print(encToHashStr)
+            print("hexed")
+            #print(codecs.decode(encToHashStr, "bin"))
+
+            print("\n\r")
+            sha256Hash = hashlib.sha256((self.TDAT+re.sub('-', '',str(i.doorUUID))).encode('ASCII'))
+            print("\n\r")
+            print("sha256.hexdigest()")
             print(str(sha256Hash.hexdigest()))
+            print("\n\r")
+            print("ecUDID")
             print(str(ecUDID))
+            print("end")
             if str(ecUDID) == str(sha256Hash.hexdigest()):
                 print("Strings mached")
                 self.accesingUDID = re.sub('-', '',str(i.doorUUID))
