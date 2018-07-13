@@ -145,7 +145,7 @@ class NfcListOfUsers(models.Model):
 
     def dacRequestP2(self, ecUDID):
         for i in self.listOfDoors.all():
-            ecUDID.lower()
+            ecUDID = ecUDID.lower()
             print("hiere")
             toHashStr = self.TDAT+re.sub('-', '',str(i.doorUUID))
             print("plain toHashStr")
