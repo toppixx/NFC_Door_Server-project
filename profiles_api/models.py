@@ -91,8 +91,8 @@ class ProfileFeedItem(models.Model):
 
 class NfcDoor(models.Model):
     """Model of a Door"""
-    nameOfDoor   = models.CharField(max_length=255)
-    doorUUID     = models.UUIDField(primary_key=True, default=uuid.uuid4)#, editable=False)
+    nameOfDoor   = models.CharField(max_length=255, default="door with no Name")
+    doorUUID     = models.CharField(max_length=16, default=get_random_string(16))#, editable=False)
 
     def __str__(self):
         """django useses this when it need to convert the object to a string"""
@@ -102,7 +102,7 @@ class NfcDoor(models.Model):
 
 class NfcDoorGroup(models.Model):
     """Model of a Groups for multiple doors or groups"""
-    nameOfDoorGroup     = models.CharField(max_length=255)
+    nameOfDoorGroup     = models.CharField(max_length=255, default="group with no name")
     listOfDoors = models.ManyToManyField(NfcDoor, related_name = 'listOfDoors_NfcDoorGroup')
 
     def __str__(self):
@@ -115,11 +115,12 @@ class NfcKey(models.Model):
         return urandom(10)
 
     """Model for a NfcKey"""
-    keyName      = models.CharField(max_length=255)
-    keyUUID      = models.UUIDField(primary_key=True, default=uuid.uuid4 )#,editable=False)
-    keyUTID      = models.TextField(max_length=64, default=uuid.uuid4 )#,editable=False)
-    AESEncryptKey= models.TextField(max_length=32, default=get_random_string(32))
-    accesTrue    = models.TextField(max_length=256, default=get_random_string(256))
+    keyName      = models.CharField(max_length=255, default="key with no name")
+    keyUUID      = models.CharField(max_length=7, default=get_random_string(7) )#,editable=False)
+    keyUTID      = models.CharField(max_length=32, default=get_random_string(32) )#,editable=False)
+    AESEncryptKey= models.CharField(max_length=32, default=get_random_string(16))
+    accesTrue    = models.CharField(max_length=32, default=get_random_string(32))
+    internalUUID = models.UUIDField(primary_key=True, default=uuid.uuid4 )#,editable=False))
 
     def __str__(self):
         """django useses this when it need to convert the object to a string"""
@@ -137,7 +138,7 @@ class NfcListOfUsers(models.Model):
         for i in self.userKeys.all():
             if re.sub('-', '',str(i.keyUUID)) == re.sub('-', '',str(uuid)):
                 self.accessingUUID = re.sub('-', '',str(uuid))
-                self.TDAT =  get_random_string(256)
+                self.TDAT =  get_random_string(32)
         #self.timeStamp = os.timeStamp()
             self.save()
             return str(self.TDAT)
@@ -223,11 +224,11 @@ class NfcListOfUsers(models.Model):
     listOfDoors  = models.ManyToManyField(NfcDoor, related_name = 'ListOfDoors_NfcListOfUsers')
     userKeys   = models.ManyToManyField(NfcKey,  related_name = 'ListOfKeys_NfcListOfUsers')
 
-    TDAT         = models.TextField(max_length=256, default=randomString(256))#,editable=False)
-    accessingUUID = models.UUIDField(default = uuid.uuid4)
-    accesingUDID = models.UUIDField(default = uuid.uuid4)#,editable=False)
-    encryptionKey= models.TextField(max_length=32, default=randomString(32))#, editable=False)    #do i need this one?
-    encryptionSalt  = models.TextField(max_length=32, default=randomString(32))
+    TDAT         = models.CharField(max_length=32, default=randomString(16))#,editable=False)
+    accessingUUID = models.CharField(max_length=7, default=randomString(7))
+    accesingUDID = models.CharField(max_length=16, default=randomString(16))#,editable=False)
+    encryptionKey= models.CharField(max_length=16, default=randomString(16))#, editable=False)    #do i need this one?
+    encryptionSalt  = models.CharField(max_length=16, default=randomString(16))
     timeStamp    = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -238,16 +239,16 @@ class NfcListOfUsers(models.Model):
 
 #recieves UUID of NFC-TAg and sends TDAT
 class NfcDACPhase1(models.Model):
-    userKeys = models.TextField(max_length=32)
+    userKeys = models.CharField(max_length=7)
 
 #recivese SHA256(Nfc-Tag-UUID + TDAT) and sends AES128(UDID)(AESEncryptionKey(NFC-TAG))
 class NfcDACPhase2(models.Model):
-    userKeys = models.TextField(max_length=32)
-    keyHash = models.TextField(max_length=256)
-    TDAT2 = models.TextField(max_length=256)
+    userKeys = models.CharField(max_length=7)
+    keyHash = models.CharField(max_length=32)
+    TDAT2 = models.CharField(max_length=32)
 
 class NfcDACPhase3(models.Model):
-    userKeys = models.TextField(max_length=32)
-    aesEncryptedNfcPw = models.TextField(max_length=256)
-    aesSalt = models.TextField(max_length=96)
-    TDAT3 = models.TextField(max_length=256)
+    userKeys = models.CharField(max_length=7)
+    aesEncryptedNfcPw = models.CharField(max_length=16)
+    aesSalt = models.CharField(max_length=16)
+    TDAT3 = models.CharField(max_length=32)
