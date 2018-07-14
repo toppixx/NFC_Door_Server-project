@@ -42,10 +42,12 @@ def encrypt(message, passphrase, IV):
     # passphrase MUST be 16, 24 or 32 bytes long, how can I do that ?
     #IV = Random.new().read(BLOCK_SIZE)
     aes = AES.new(passphrase, AES.MODE_CFB, IV)
-    return base64.b64encode(aes.encrypt(message))
+    #return base64.b64encode(aes.encrypt(message))
+    return (aes.encrypt(message))
 
 def decrypt(encrypted, passphrase, IV):
     """ function to decrypt with AES. (encrypted, passphase, IV)"""
     #IV = Random.new().read(BLOCK_SIZE)
     aes = AES.new(passphrase, AES.MODE_CFB, IV)
-    return aes.decrypt(base64.b64decode(encrypted))
+    #return aes.decrypt(base64.b64decode(encrypted))
+    return aes.decrypt((encrypted))

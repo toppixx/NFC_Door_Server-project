@@ -183,7 +183,14 @@ class NfcListOfUsers(models.Model):
                     if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                         #aesEncryption = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
                         #return aesEncryption.encrypt(n.AESEncryptKey)
-                        return (str(AesCryption.encrypt(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt)) , base64.b64encode(self.encryptionSalt))
+                        cypher = str(AesCryption.encrypt(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt).hex())
+                        #salt = self.encryptionSalt
+                        salt = str(self.encryptionSalt.hex());
+                        print()
+                        print(cypher)
+                        print(salt)
+                        return cypher , salt
+                        #return (str(AesCryption.encrypt(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt)) , base64.b64encode(self.encryptionSalt))
         return 'fail', 'fail'
 
     def dacRequestP3(self, uuid, aesEncryptedNfcPw,aesSalt):
