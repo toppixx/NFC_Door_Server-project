@@ -1,5 +1,5 @@
 """
-WSGI config for apiview project.
+WSGI config for Nfc_Door project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "apiview.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Nfc_Door.settings")
 
 application = get_wsgi_application()

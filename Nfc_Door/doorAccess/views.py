@@ -16,6 +16,8 @@ from . import serializers
 from . import models
 from . import permissions
 
+import re
+
 
 
 import json
@@ -218,10 +220,20 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
         serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
         if serializer.is_valid():
             userKey = request.data.get('userKeys')
-            queryset = models.NfcListOfUsers.objects.get(userKeys=userKey)
+            print(userKey)
             if userKey is not None:
+                print(self.queryset)
+                print(str(self.queryset))
+                # queryset = models.NfcListOfUsers.objects.filter(userName="Mike")
+                queryset = models.NfcKey.objects.filter(keyUUID=userKey)
+                #queryset = models.NfcListOfUsers.objects.filter(userKeys="jd6ROdV")
                 if queryset :
-                    return Response({'returnToken' : queryset.dacRequestP1(userKey)})
+                    queryset = models.NfcKey.objects.get(keyUUID=userKey)
+                    queryset2 = models.NfcListOfUsers.objects.filter(userKeys=queryset.getId())
+                    if queryset2 :
+                        queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
+                        return Response({'returnToken' : queryset2.dacRequestP1(userKey)})
+
             return Response({'Error no falid value entered'})
 
         else:
@@ -243,14 +255,16 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             userKey = request.data.get('userKeys')
             udid = request.data.get('keyHash')
-            print(udid)
-            #hash = hashlib.sha256(models.NfcListOfUsers.objects.filter(userKeys=uuid))
-            queryset = models.NfcListOfUsers.objects.filter(userKeys=userKey)
-            if userKey is not None and udid is not None and queryset:
-                queryset = models.NfcListOfUsers.objects.get(userKeys=userKey)
-                if queryset:
-                    cypher, iv = queryset.dacRequestP2(udid)
-                    return Response({'cypher' : cypher, 'iv' : iv})
+            if userKey is not None and udid is not None:
+                #hash = hashlib.sha256(models.NfcListOfUsers.objects.filter(userKeys=uuid))
+                queryset = models.NfcKey.objects.filter(keyUUID=userKey)
+                if queryset :
+                    queryset = models.NfcKey.objects.get(keyUUID=userKey)
+                    queryset2 = models.NfcListOfUsers.objects.filter(userKeys=queryset.getId())
+                    if queryset2:
+                        queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
+                        cypher, iv = queryset2.dacRequestP2(udid)
+                        return Response({'cypher' : cypher, 'iv' : iv})
 
             return Response({'Error no falid value entered'})
 

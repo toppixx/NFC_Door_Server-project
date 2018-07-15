@@ -5,11 +5,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
-from profiles_api import models as profiles_api_models
+from doorAccess import models as doorAccess_models
 import json
 import hashlib
 import re
-from profiles_api import AesCryption
+from doorAccess import AesCryption
 import base64
 import codecs
 
@@ -111,20 +111,32 @@ class NfcDoorGroup(models.Model):
 
 
 class NfcKey(models.Model):
-    def unique_rand_AES():
-        return urandom(10)
 
     """Model for a NfcKey"""
+    id = models.AutoField(primary_key=True)
     keyName      = models.CharField(max_length=255, default="key with no name")
     keyUUID      = models.CharField(max_length=7, default=get_random_string(7) )#,editable=False)
     keyUTID      = models.CharField(max_length=32, default=get_random_string(32) )#,editable=False)
     AESEncryptKey= models.CharField(max_length=32, default=get_random_string(16))
     accesTrue    = models.CharField(max_length=32, default=get_random_string(32))
-    internalUUID = models.UUIDField(primary_key=True, default=uuid.uuid4 )#,editable=False))
+    internalUUID = models.UUIDField(default=uuid.uuid4 ,editable=False)
+    @property
+    def category_id(self):
+        return self.id
 
+    def getId(self):
+        return self.id
     def __str__(self):
+
         """django useses this when it need to convert the object to a string"""
-        return str(self.keyName + "\t\t\t   " + str(self.keyUUID))
+        return  str(self.keyUUID)
+    def getInternalUUID(self):
+        print(self.internalUUID)
+        print(re.sub('-', '',str(self.internalUUID)))
+        return str(re.sub('-', '',str(self.internalUUID)))
+
+    def getSelf(self):
+        return self
 
 
 
@@ -133,6 +145,8 @@ class NfcListOfUsers(models.Model):
     def randomString(value):
         return get_random_string(value)
 
+    def getUserKeys(self):
+        return self.userKeys
 
     def dacRequestP1(self,uuid):
         for i in self.userKeys.all():
