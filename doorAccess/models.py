@@ -12,7 +12,7 @@ import re
 from doorAccess import AesCryption
 import base64
 import codecs
-
+import binascii
 
 
 class UserProfileManager(BaseUserManager):
@@ -200,9 +200,10 @@ class NfcListOfUsers(models.Model):
                     if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                         #aesEncryption = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
                         #return aesEncryption.encrypt(n.AESEncryptKey)
-                        cypher = str(AesCryption.encrypt(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt).hex())
+                        cypher = str(AesCryption.encrypt(bytes(n.AESEncryptKey, 'ascii'), bytes(self.encryptionKey, 'ascii'), bytes(self.encryptionSalt,'ascii')).hex())
                         #salt = self.encryptionSalt
-                        salt = str(self.encryptionSalt.hex());
+                        salt = ''.join(hex(ord(x))[2:] for x in self.encryptionSalt)
+                        #salt = binascii.hexlify(self.encryptionSalt);
                         print()
                         print(cypher)
                         print(salt)
