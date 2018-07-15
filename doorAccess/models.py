@@ -189,10 +189,10 @@ class NfcListOfUsers(models.Model):
             if str(ecUDID) == str(sha256Hash.hexdigest()):
                 print("Strings mached")
                 print(i.doorUUID)
-                print(urandom(16))
                 self.accesingUDID = i.doorUUID
                 self.encryptionKey = i.doorUUID #self.accesingUDID
                 self.encryptionSalt = get_random_string(16)
+                print(self.encryptionSalt)
                 self.save()
                 for n in self.userKeys.all():
                     print(n.keyUUID)
