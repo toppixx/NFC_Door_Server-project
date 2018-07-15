@@ -192,7 +192,7 @@ class NfcListOfUsers(models.Model):
                 print(urandom(16))
                 self.accesingUDID = i.doorUUID
                 self.encryptionKey = i.doorUUID #self.accesingUDID
-                self.encryptionSalt = urandom(16)
+                self.encryptionSalt = get_random_string(16)
                 self.save()
                 for n in self.userKeys.all():
                     print(n.keyUUID)
