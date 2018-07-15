@@ -200,6 +200,13 @@ class NfcListOfUsers(models.Model):
                     if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                         #aesEncryption = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
                         #return aesEncryption.encrypt(n.AESEncryptKey)
+                        print("aesEncryptKeyOfNFCTag")
+                        print(n.AESEncryptKey)
+                        print("salt")
+                        print(self.encryptionSalt)
+                        print("encryption Key")
+                        print(self.encryptionKey)
+
                         cypher = str(AesCryption.encrypt(bytes(n.AESEncryptKey, 'ascii'), bytes(self.encryptionKey, 'ascii'), bytes(self.encryptionSalt,'ascii')).hex())
                         #salt = self.encryptionSalt
                         salt = ''.join(hex(ord(x))[2:] for x in self.encryptionSalt)
