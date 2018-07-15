@@ -217,11 +217,11 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
     def create(self, request, pk=None):
         serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
         if serializer.is_valid():
-            uuid = request.data.get('userKeys')
-            queryset = models.NfcListOfUsers.objects.get(userKeys=uuid)
-            if uuid is not None:
+            userKey = request.data.get('userKeys')
+            queryset = models.NfcListOfUsers.objects.get(userKeys=userKey)
+            if userKey is not None:
                 if queryset :
-                    return Response({'returnToken' : queryset.dacRequestP1(uuid)})
+                    return Response({'returnToken' : queryset.dacRequestP1(userKey)})
             return Response({'Error no falid value entered'})
 
         else:
@@ -241,13 +241,13 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
     def create(self, request, pk=None):
         serializer = serializers.NfcDooorAcContPhase2Serializer(data=request.data)
         if serializer.is_valid():
-            uuid = request.data.get('userKeys')
+            userKey = request.data.get('userKeys')
             udid = request.data.get('keyHash')
             print(udid)
             #hash = hashlib.sha256(models.NfcListOfUsers.objects.filter(userKeys=uuid))
-            queryset = models.NfcListOfUsers.objects.filter(userKeys=uuid)
-            if uuid is not None and udid is not None and queryset:
-                queryset = models.NfcListOfUsers.objects.get(userKeys=uuid)
+            queryset = models.NfcListOfUsers.objects.filter(userKeys=userKey)
+            if userKey is not None and udid is not None and queryset:
+                queryset = models.NfcListOfUsers.objects.get(userKeys=userKey)
                 if queryset:
                     cypher, iv = queryset.dacRequestP2(udid)
                     return Response({'cypher' : cypher, 'iv' : iv})
@@ -265,17 +265,17 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
     def create(self, request, pk=None):
         serializer = serializers.NfcDooorAcContPhase3Serializer(data=request.data)
         if serializer.is_valid():
-            uuid = request.data.get('userKeys')
+            userKeys = request.data.get('userKeys')
             aesEncryptedNfcPW = request.data.get('aesEncryptedNfcPw')
             aesSalt = request.data.get('aesSalt')
             TDAT3 = request.data.get('TDAT3')
             print('part 1')
-            if uuid is not None and aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None :
-                queryset = models.NfcListOfUsers.objects.filter(userKeys=uuid)
+            if userKeys is not None and aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None :
+                queryset = models.NfcListOfUsers.objects.filter(userKeys=userKeys)
                 print('part 2')
                 if queryset:
-                    queryset = models.NfcListOfUsers.objects.get(userKeys=uuid)
+                    queryset = models.NfcListOfUsers.objects.get(userKeys=userKeys)
                     print('part 3')
-                    return Response({'returnVal' : queryset.dacRequestP3(uuid, aesEncryptedNfcPW, aesSalt)})
+                    return Response({'returnVal' : queryset.dacRequestP3(userKeys, aesEncryptedNfcPW, aesSalt)})
 
         return Response({'Error no falid value entered'})

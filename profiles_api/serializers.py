@@ -76,11 +76,13 @@ class NfcDooorAcContPhase1Serializer(serializers.ModelSerializer):
 #
         fields = ('userKeys',)
         #extra_kwargs={'userKeys':{'write_only':True}}
-
+        extra_kwargs={}
+        
 class NfcDooorAcContPhase2Serializer(serializers.ModelSerializer):
     class Meta:
         model = models.NfcDACPhase2
         fields = ('userKeys','keyHash', 'TDAT2')
+        extra_kwargs={}
         #extra_kwargs={'userKeys':{'write_only':True}, 'userKeys':{'write_only':True}, 'TDAT2':{'read_only':True}}
 
 class NfcDooorAcContPhase3Serializer(serializers.ModelSerializer):
