@@ -207,14 +207,18 @@ class NfcListOfUsers(models.Model):
                         print("encryption Key")
                         print(self.encryptionKey)
 
-                        cypher = str(AesCryption.encrypt(bytes(n.AESEncryptKey, 'ascii'), bytes(self.encryptionKey, 'ascii'), bytes(self.encryptionSalt,'ascii')).hex())
+                        cypher, tag = str(AesCryption.encrypt(bytes(n.AESEncryptKey, 'ascii'), bytes(self.encryptionKey, 'ascii'), bytes(self.encryptionSalt,'ascii')).hex())
                         #salt = self.encryptionSalt
                         salt = ''.join(hex(ord(x))[2:] for x in self.encryptionSalt)
                         #salt = binascii.hexlify(self.encryptionSalt);
                         print()
+                        print("cypher")
                         print(cypher)
+                        print("salt")
                         print(salt)
-                        return cypher , salt
+                        print("tag")
+                        print(tag)
+                        return cypher , salt, tag
                         #return (str(AesCryption.encrypt(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt)) , base64.b64encode(self.encryptionSalt))
         return 'fail', 'fail'
 
