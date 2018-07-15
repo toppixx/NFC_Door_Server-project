@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import os.path, sys
+ # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+#for clean app django-clean
+#PROJECT_PATH =  os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_PATH = os.path.dirname(__file__)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -31,6 +34,7 @@ ALLOWED_HOSTS = ['localhost','192.168.208.153','127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'clean',
     'profiles_api.apps.ProfilesApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -76,7 +80,7 @@ WSGI_APPLICATION = 'apiview.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-# 
+#
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
