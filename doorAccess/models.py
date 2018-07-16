@@ -15,6 +15,8 @@ import codecs
 import binascii
 
 
+from Crypto.Cipher import AES
+
 class UserProfileManager(BaseUserManager):
     """Helps django to work with our custom user model."""
 
@@ -200,24 +202,67 @@ class NfcListOfUsers(models.Model):
                     if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                         #aesEncryption = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
                         #return aesEncryption.encrypt(n.AESEncryptKey)
-                        print("aesEncryptKeyOfNFCTag")
-                        print(n.AESEncryptKey)
-                        print("salt")
-                        print(self.encryptionSalt)
-                        print("encryption Key")
-                        print(self.encryptionKey)
+                        # print("\n\raesEncryptKeyOfNFCTag")
+                        # print(n.AESEncryptKey)
+                        # print("\n\rsalt")
+                        # print(self.encryptionSalt)
+                        # print("\n\rencryption Key")
+                        # print(self.encryptionKey)
+                        # self.encryptionSalt = "f3Dnj6J0F3y9cVJI"
+                        # print("\n\rhex ecryption Salt")
+                        # print(bytes(self.encryptionSalt,'ascii'))
+                        # print("\n\rhex AESEncrypted Key plain text")
+                        #
+                        # print(bytes(self.encryptionSalt,'ascii').hex())
+                        # print(bytes(n.AESEncryptKey, 'ascii'))
+                        # print(bytes(n.AESEncryptKey, 'ascii').hex())
+                        # print("\n\rhex encryption key")
+                        #
+                        # print(bytes(self.encryptionKey, 'ascii'))
+                        # print(bytes(self.encryptionKey, 'ascii').hex())
+                        # cypher = str(AesCryption.encrypt(bytes(n.AESEncryptKey, 'ascii'), bytes(self.encryptionKey, 'ascii'), bytes(self.encryptionSalt,'ascii')).hex())
+                        # #salt = self.encryptionSalt
+                        #
+                        # ''.join(hex(ord(x))[2:] for x in self.encryptionSalt)
+                        # #salt = binascii.hexlify(self.encryptionSalt);
+                        # key = bytes(self.encryptionKey, 'ascii')
+                        # salt = self.encryptionSalt
+                        # cipher = AES.new(key, AES.MODE_CBC, salt)
+                        # msg = cipher.encrypt(b'Attack at dawn12')
+                        # # cipher.nonce = bytes(self.encryptionSalt,'ascii')
+                        # print("msg")
+                        # print(msg.hex())
+                        # print("salt")
+                        # print(salt)
+                        # print()
+                        # print("cypher")
+                        # print(cypher)
+                        # print("salt")
+                        # print(salt)
+                        #return msg , salt
 
-                        cypher = str(AesCryption.encrypt(bytes(n.AESEncryptKey, 'ascii'), bytes(self.encryptionKey, 'ascii'), bytes(self.encryptionSalt,'ascii')).hex())
-                        #salt = self.encryptionSalt
-                        salt = ''.join(hex(ord(x))[2:] for x in self.encryptionSalt)
-                        #salt = binascii.hexlify(self.encryptionSalt);
-                        print()
-                        print("cypher")
-                        print(cypher)
-                        print("salt")
-                        print(salt)
+                        iv = "TestTestTestTest"
+                        #iv = self.encryptionSalt
+                        print("iv")
+                        print(iv)
+                        ecKey = "cKeycKeycKeycKey"
+                        #ecKey = self.encryptionKey
+                        print("ecKey")
+                        print(ecKey)
+                        plainTxt = "0123456789abcdef"
+                        #plainTxt = n.AESEncryptKey
+                        print("plainTxt")
+                        print(plainTxt)
+                        aesTest = AesCryption.AES128test()
 
-                        return cypher , salt
+                        print("\n\rplainTxt")
+                        print(plainTxt)
+                        ecTxt = aesTest.encrypt(plainTxt, ecKey, iv)
+
+                        Txt = aesTest.decrypt(ecTxt,ecKey,iv)
+                        print("decypted Text")
+                        print(str(Txt))
+                        return ecTxt.hex() , bytes(iv,'ascii').hex()
                         #return (str(AesCryption.encrypt(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt)) , base64.b64encode(self.encryptionSalt))
         return 'fail', 'fail'
 

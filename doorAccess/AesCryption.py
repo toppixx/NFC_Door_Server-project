@@ -36,18 +36,46 @@ from Crypto.Cipher import AES
 import base64
 
 BLOCK_SIZE=32
+class AES128test():
+    def encrypt(sef, message, passphrase, IV):
+        """ function to encrypt with AES. (message, passphase, IV)"""
+        # # passphrase MUST be 16, 24 or 32 bytes long, how can I do that ?
+        # #IV = Random.new().read(BLOCK_SIZE)
+        # aes = AES.new(passphrase, AES.MODE_CFB, IV)
+        # #return base64.b64encode(aes.encrypt(message))
+        # return (aes.encrypt(message))
+        messageB = bytes(message, 'ascii')
+        print(messageB)
+        print(messageB.hex())
+        passphraseB = bytes(passphrase, 'ascii')
+        IVB = bytes(IV, 'ascii')
+        # passphrase MUST be 16, 24 or 32 bytes long, how can I do that ?
+        #IV = Random.new().read(BLOCK_SIZE)
+        aes = AES.new(passphraseB, AES.MODE_CBC, IVB)
+        #return base64.b64encode(aes.encrypt(message))
+        #return aes.encrypt(messageB)
+        cipher = aes.encrypt(messageB)
+        print("\n\rcipher")
+        print(cipher)
+        print(cipher.hex())
+        print("\n\r")
+        return cipher
 
-def encrypt(message, passphrase, IV):
-    """ function to encrypt with AES. (message, passphase, IV)"""
-    # passphrase MUST be 16, 24 or 32 bytes long, how can I do that ?
-    #IV = Random.new().read(BLOCK_SIZE)
-    aes = AES.new(passphrase, AES.MODE_CFB, IV)
-    #return base64.b64encode(aes.encrypt(message))
-    return (aes.encrypt(message))
-
-def decrypt(encrypted, passphrase, IV):
-    """ function to decrypt with AES. (encrypted, passphase, IV)"""
-    #IV = Random.new().read(BLOCK_SIZE)
-    aes = AES.new(passphrase, AES.MODE_CFB, IV)
-    #return aes.decrypt(base64.b64decode(encrypted))
-    return aes.decrypt((encrypted))
+    def decrypt(self, encrypted, passphrase, IV):
+        """ function to decrypt with AES. (encrypted, passphase, IV)"""
+        # #IV = Random.new().read(BLOCK_SIZE)
+        # aes = AES.new(passphrase, AES.MODE_CFB, IV)
+        # #return aes.decrypt(base64.b64decode(encrypted))
+        # return aes.decrypt((encrypted))
+        #IV = Random.new().read(BLOCK_SIZE)
+        encryptedB = encrypted
+        passphraseB = bytes(passphrase, 'ascii')
+        IVB = bytes(IV, 'ascii')
+        aes = AES.new(passphraseB, AES.MODE_CBC, IVB)
+        #return aes.decrypt(base64.b64decode(encrypted))
+        plaintxt = aes.decrypt((encryptedB))
+        print("decrypted")
+        print(plaintxt)
+        print(plaintxt.hex())
+        print("\n\r")
+        return plaintxt
