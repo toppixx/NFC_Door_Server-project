@@ -263,7 +263,7 @@ class NfcListOfUsers(models.Model):
                         print("decypted Text")
                         print(str(Txt))
                         return ecTxt.hex() , bytes(iv,'ascii').hex()
-                        #return (str(AesCryption.encrypt(n.AESEncryptKey, self.encryptionKey, self.encryptionSalt)) , base64.b64encode(self.encryptionSalt))
+
         return 'fail', 'fail'
 
     def dacRequestP3(self, uuid, aesEncryptedNfcPw,aesSalt):
