@@ -241,16 +241,16 @@ class NfcListOfUsers(models.Model):
                         # print(salt)
                         #return msg , salt
 
-                        iv = "TestTestTestTest"
-                        #iv = self.encryptionSalt
+                        #iv = "TestTestTestTest"
+                        iv = self.encryptionSalt
                         print("iv")
                         print(iv)
-                        ecKey = "cKeycKeycKeycKey"
-                        #ecKey = self.encryptionKey
+                        #ecKey = "cKeycKeycKeycKey"
+                        ecKey = self.encryptionKey
                         print("ecKey")
                         print(ecKey)
-                        plainTxt = "0123456789abcdef"
-                        #plainTxt = n.AESEncryptKey
+                        #plainTxt = "0123456789abcdef"
+                        plainTxt = n.AESEncryptKey
                         print("plainTxt")
                         print(plainTxt)
                         aesTest = AesCryption.AES128test()
