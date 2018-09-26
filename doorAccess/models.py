@@ -117,7 +117,7 @@ class NfcKey(models.Model):
     """Model for a NfcKey"""
     id = models.AutoField(primary_key=True)
     keyName      = models.CharField(max_length=255, default="key with no name")
-    keyUUID      = models.CharField(max_length=7, default=get_random_string(7) )#,editable=False)
+    keyUUID      = models.CharField(max_length=20, default=get_random_string(20) )#,editable=False)
     keyUTID      = models.CharField(max_length=32, default=get_random_string(32) )#,editable=False)
     AESEncryptKey= models.CharField(max_length=32, default=get_random_string(16))
     accesTrue    = models.CharField(max_length=32, default=get_random_string(32))
