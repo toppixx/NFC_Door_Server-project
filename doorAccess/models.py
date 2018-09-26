@@ -311,16 +311,16 @@ class NfcListOfUsers(models.Model):
 
 #recieves UUID of NFC-TAg and sends TDAT
 class NfcDACPhase1(models.Model):
-    userKeys = models.CharField(max_length=7)
+    userKeys = models.CharField(max_length=20)
 
 #recivese SHA256(Nfc-Tag-UUID + TDAT) and sends AES128(UDID)(AESEncryptionKey(NFC-TAG))
 class NfcDACPhase2(models.Model):
-    userKeys = models.CharField(max_length=7)
+    userKeys = models.CharField(max_length=20)
     keyHash = models.CharField(max_length=66)
     TDAT2 = models.CharField(max_length=32)
 
 class NfcDACPhase3(models.Model):
-    userKeys = models.CharField(max_length=7)
+    userKeys = models.CharField(max_length=20)
     aesEncryptedNfcPw = models.CharField(max_length=16)
     aesSalt = models.CharField(max_length=16)
     TDAT3 = models.CharField(max_length=32)
