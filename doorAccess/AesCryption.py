@@ -36,7 +36,7 @@ from Crypto.Cipher import AES
 import base64
 
 BLOCK_SIZE=32
-class AES128test():
+class AES128CryptoLib():
     def encrypt(sef, message, passphrase, IV):
         """ function to encrypt with AES. (message, passphase, IV)"""
         # # passphrase MUST be 16, 24 or 32 bytes long, how can I do that ?

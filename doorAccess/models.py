@@ -94,7 +94,7 @@ class ProfileFeedItem(models.Model):
 class NfcDoor(models.Model):
     """Model of a Door"""
     nameOfDoor   = models.CharField(max_length=255, default="door with no Name")
-    doorUUID     = models.CharField(max_length=16, default=get_random_string(16))#, editable=False)
+    doorUDID     = models.CharField(max_length=16, default=get_random_string(16))#, editable=False)
 
     def __str__(self):
         """django useses this when it need to convert the object to a string"""
@@ -161,44 +161,56 @@ class NfcListOfUsers(models.Model):
         return 'fail'
 
     def dacRequestP2(self, ecUDID):
+        rowDoorList = 0
         for i in self.listOfDoors.all():
+            rowDoorList = rowDoorList+1
+            print("row %d:" %(rowDoorList))
             ecUDID = ecUDID.lower()
-            print("hiere")
-            toHashStr = self.TDAT+re.sub('-', '',str(i.doorUUID))
-            print("plain toHashStr")
-            print(toHashStr)
-            print("hexed")
-            #print(toHashStr.hexdigest())
-            print("".join("{:02x}".format(ord(c)) for c in toHashStr))
-            print(toHashStr)
-            print("\n\r")
-            encToHashStr = (self.TDAT+re.sub('-', '',str(i.doorUUID))).encode()
+            #DEBUG
+            # toHashStr = self.TDAT+re.sub('-', '',str(i.doorUDID))
+            # print("\SERVER plain to hash: String(TDAT + UDID)")
+            # print(toHashStr)
+            # print("\nSERVER hexed to hash: String(TDAT + UDID)")
+            # print("".join("{:02x}".format(ord(c)) for c in toHashStr))
+            # encToHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID))).encode()
+            #DEBUG
 
-            print("encoded toHashStr")
-            print(encToHashStr)
-            print("hexed")
-            #print(codecs.decode(encToHashStr, "bin"))
+            toHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID)))
 
-            print("\n\r")
-            sha256Hash = hashlib.sha256((self.TDAT+re.sub('-', '',str(i.doorUUID))).encode('ASCII'))
-            print("\n\r")
-            print("sha256.hexdigest()")
-            print(str(sha256Hash.hexdigest()))
-            print("\n\r")
-            print("ecUDID")
+            #toHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID))).encode('ASCII'))
+            sha256Hash = hashlib.sha256(toHashStr.encode('ASCII'))
+            #old version that worked for savty
+            #sha256Hash = hashlib.sha256((self.TDAT+re.sub('-', '',str(i.doorUDID))).encode('ASCII'))
+            print("\nSERVER hexed to hash: String(TDAT + UDID)")
+            print("input:" + toHashStr)
+            print("output:" +str(sha256Hash.hexdigest()))
+            print("\nREMOTE hexed to hash: String(TDAT + UDID)")
             print(str(ecUDID))
-            print("end")
+            print("\ngoint to compare calculated and hashed SHA256 Hash")
+            print("server-hashed: "+sha256Hash.hexdigest())
+            print("remote-hasehd: "+ ecUDID)
             if str(ecUDID) == str(sha256Hash.hexdigest()):
-                print("Strings mached")
-                print(i.doorUUID)
-                self.accesingUDID = i.doorUUID
-                self.encryptionKey = i.doorUUID #self.accesingUDID
-                self.encryptionSalt = get_random_string(16)
-                print(self.encryptionSalt)
+                print("\ncalculated SHA256 Hash and recieve Hash found a mach")
+                print("\tfound UDID of the accesing Door is: \n\t"+i.doorUDID)
+
+                print("\n\nsetup Data for enshuring encrypted communication")
+                iv = get_random_string(16)
+                print("generated Salt (iv) for AES encryption is:\n\t"+iv)
+                print("\nstoring Data of the Accesing UUID for next actions")
+                self.encryptionSalt = iv
+                self.accesingUDID = i.doorUDID
+                self.encryptionKey = i.doorUDID #self.accesingUDID
                 self.save()
+
+                print("\n--checking allowence of the accesing UUID--")
+                #TODO i think this is already complited in views bevor calling dacRequestP2()
+                print("searching for the key entry of the accessing UUID to get the right AES Encryption Key which one the NFC-Tag is encrypted")
+                rowKeyList = 0
                 for n in self.userKeys.all():
-                    print(n.keyUUID)
-                    print(self.accessingUUID)
+                    rowKeyList = rowKeyList +1;
+                    print("\nkeyList row %d :" %(rowKeyList))
+                    print("compatre:\n" + n.keyUUID + " (keyListElement UUID)")
+                    print(self.accessingUUID + " (accesing UUID()\n")
                     if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                         #aesEncryption = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
                         #return aesEncryption.encrypt(n.AESEncryptKey)
@@ -242,28 +254,25 @@ class NfcListOfUsers(models.Model):
                         #return msg , salt
 
                         #iv = "TestTestTestTest"
+
+
+                        print("going to cypher the AES Encryption Key of the NFC-Tag")
                         iv = self.encryptionSalt
-                        print("iv")
-                        print(iv)
-                        #ecKey = "cKeycKeycKeycKey"
-                        ecKey = self.encryptionKey
-                        print("ecKey")
-                        print(ecKey)
-                        #plainTxt = "0123456789abcdef"
-                        plainTxt = n.AESEncryptKey
-                        print("plainTxt")
-                        print(plainTxt)
-                        aesTest = AesCryption.AES128test()
+                        encryptionKey = self.encryptionKey
+                        plainText = n.AESEncryptKey
+                        aesCryptor = AesCryption.AES128CryptoLib()
+                        cypherText = aesCryptor.encrypt(plainText, encryptionKey, iv)
 
-                        print("\n\rplainTxt")
-                        print(plainTxt)
-                        ecTxt = aesTest.encrypt(plainTxt, ecKey, iv)
+                        print("iv" + iv)
+                        print("encryptionKey" + encryptionKey)
+                        print("plainTxt" + plainText)
+                        print("cypherText" + str(cypherText))
 
-                        Txt = aesTest.decrypt(ecTxt,ecKey,iv)
-                        print("decypted Text")
-                        print(str(Txt))
-                        return ecTxt.hex() , bytes(iv,'ascii').hex()
+                        plainTxtDecrypt = aesCryptor.decrypt(cypherText,encryptionKey,iv)
+                        print("decypted Text" + str(plainTxtDecrypt))
+                        return cypherText.hex() , bytes(iv,'ascii').hex()
 
+        print("\ncomparing SHA256 Hashes failed")
         return 'fail', 'fail'
 
     def dacRequestP3(self, uuid, aesEncryptedNfcPw,aesSalt):

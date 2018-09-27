@@ -217,13 +217,13 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.NfcDooorAcContPhase1Serializer
     queryset = models.NfcListOfUsers.objects.all()
     def create(self, request, pk=None):
+        print("\n\n==========================\nEntering Phase 1!!\n==========================\n")
         serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
         if serializer.is_valid():
             userKey = request.data.get('userKeys')
+            print("recieved UUID:")
             print(userKey)
             if userKey is not None:
-                print(self.queryset)
-                print(str(self.queryset))
                 # queryset = models.NfcListOfUsers.objects.filter(userName="Mike")
                 queryset = models.NfcKey.objects.filter(keyUUID=userKey)
                 #queryset = models.NfcListOfUsers.objects.filter(userKeys="jd6ROdV")
@@ -232,11 +232,19 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
                     queryset2 = models.NfcListOfUsers.objects.filter(userKeys=queryset.getId())
                     if queryset2 :
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
+                        print("\n==========================\nPhase 1 successfully ended. \nReturning returnToken to CardReader!")
+                        print("\treturnToken:  " + queryset2.dacRequestP1(userKey))
+                        print("==========================\n")
                         return Response({'returnToken' : queryset2.dacRequestP1(userKey)})
-
+            print("\n==========================\nPhase 1 Failed !!!")
+            print("Error no falid value entered")
+            print("==========================\n")
             return Response({'Error no falid value entered'})
 
         else:
+            print("\n==========================\nPhase 1 Error 404 !!!")
+            print("404 Error")
+            print("==========================\n")
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
     def list(self, request):
@@ -251,6 +259,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.NfcDooorAcContPhase2Serializer
     queryset = models.NfcListOfUsers.objects.filter(TDAT='asdfalsjfljeroiqtoiJLKDJFLKJSALKFL')
     def create(self, request, pk=None):
+        print("\n\n==========================\nEntering Phase 2!!\n==========================\n")
         serializer = serializers.NfcDooorAcContPhase2Serializer(data=request.data)
         if serializer.is_valid():
             userKey = request.data.get('userKeys')
@@ -264,6 +273,9 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                     if queryset2:
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
                         cypher, iv = queryset2.dacRequestP2(udid)
+                        print("\n==========================\nPhase 2 successfully ended. \nreturning return cypher and iv to CardReader!")
+                        print("\tcypher:  " + cypher +"\n\tiv:  " + iv)
+                        print("==========================\n")
                         return Response({'cypher' : cypher, 'iv' : iv})
 
             return Response({'Error no falid value entered'})
