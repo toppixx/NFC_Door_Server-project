@@ -160,7 +160,7 @@ class NfcListOfUsers(models.Model):
             return str(self.TDAT)
         return 'fail'
 
-    def dacRequestP2(self, ecUDID):
+    def dacRequestP2(self, uuid, ecUDID):
         rowDoorList = 0
         for i in self.listOfDoors.all():
             rowDoorList = rowDoorList+1
@@ -199,7 +199,8 @@ class NfcListOfUsers(models.Model):
                 print("\n\nsetup Data for enshuring encrypted communication")
                 iv = get_random_string(16)
                 print("generated Salt (iv) for AES encryption is:\n\t"+iv)
-                print("\nstoring Data of the Accesing UUID for next actions")
+                print("\nstoring Data of the Accesing UUID and UDID for next actions")
+                self.accessingUUID = uuid #self.accesingUDID
                 self.encryptionSalt = iv
                 self.accesingUDID = i.doorUDID
                 self.encryptionKey = i.doorUDID #self.accesingUDID
@@ -280,28 +281,37 @@ class NfcListOfUsers(models.Model):
         print("\ncomparing SHA256 Hashes failed!!!")
         return 'fail', 'fail'
 
-    def dacRequestP3(self, uuid, aesEncryptedNfcPw,aesSalt):
+    def dacRequestP3(self,uuid, keyHash, TDAT3):
+        #TODO decrypt keyHash check Permission and return DoorHandle if true else -1
         #debugStyle
-        aesSalt = aesSalt.encode('utf-8')
-        aesEncryptedNfcPw = aesEncryptedNfcPw.encode('utf-8')
-        #debugStyle End
-        self.encryptionSalt = aesSalt
-        #aesDecrypt = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
-        #nfcUTID = aesDecrypt.decrypt(aesEncryptedNfcPw, aesSalt)
-        print(self)
-        print(uuid)
-        for i in self.userKeys.all():
-            print(i.keyUUID)
-            if re.sub('-', '',str(i.keyUUID)) == uuid:
-                print(re.sub('-', '',str(i.keyUUID)))
-                nfcUTID = AesCryption.decrypt(aesEncryptedNfcPw, self.encryptionKey, self.encryptionSalt)
-                if i.keyUTID == nfcUTID:
-                    return 'UTID was true'
-                    return hashlib.sha256(sef.accesingUDID+self.NfcKey.accesTrue).hexdigest()
+        if(uuid==self.accessingUUID):
+            rowKeyList = 0
+            for n in self.userKeys.all():
+                rowKeyList = rowKeyList +1;
+                print("\nkeyList row %d :" %(rowKeyList))
+                print("compatre:\n" + n.keyUUID + " (keyListElement UUID)")
+                print(self.accessingUUID + " (accesing UUID()\n")
+                if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
+                    print("going to decrypt the cypher text with Setion AES Encryption Key fof the Connection")
+                    iv = self.encryptionSalt
+                    encryptionKey = self.encryptionKey
+                    cipherText = keyHash
+                    aesCryptor = AesCryption.AES128CryptoLib()
+                    plainTxtDecrypt = aesCryptor.decrypt(cipherText,encryptionKey,iv)
+
+                    print("iv:\t\t" + iv)
+                    print("encryptionKey:\t" + encryptionKey)
+                    print("cipherText:\t" + str(cipherText))
+                    print("For testing:")
+                    print("decyptedText:\t" + str(plainTxtDecrypt))
+
+                    #print("decyptedText:\t" + str(plainTxtDecrypt.decode('ASCII')))
+
                 else:
-                    return 'UTID was false'
-            else:
-                return 'uuid not found'
+                    return 'uuid not found'
+        else:
+            return 'not the same uuid connection sequenz Error'
+
         return 'fail'
 
     userName     = models.CharField(max_length=255)

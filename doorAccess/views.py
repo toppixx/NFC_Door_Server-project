@@ -272,7 +272,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                     queryset2 = models.NfcListOfUsers.objects.filter(userKeys=queryset.getId())
                     if queryset2:
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
-                        cypher, iv = queryset2.dacRequestP2(udid)
+                        cypher, iv = queryset2.dacRequestP2(userKey,udid)
                         print("\n==========================\nPhase 2 successfully ended. \nreturning return cypher and iv to CardReader!")
                         print("\tcypher:  " + cypher +"\n\tiv:  " + iv)
                         print("==========================\n")
@@ -292,16 +292,24 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
         serializer = serializers.NfcDooorAcContPhase3Serializer(data=request.data)
         if serializer.is_valid():
             userKeys = request.data.get('userKeys')
-            aesEncryptedNfcPW = request.data.get('aesEncryptedNfcPw')
-            aesSalt = request.data.get('aesSalt')
+            keyHash = request.data.get('keyHash')
+            #aesEncryptedNfcPW = request.data.get('aesEncryptedNfcPw')
+            #aesSalt = request.data.get('aesSalt')
             TDAT3 = request.data.get('TDAT3')
             print('part 1')
-            if userKeys is not None and aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None :
-                queryset = models.NfcListOfUsers.objects.filter(userKeys=userKeys)
-                print('part 2')
-                if queryset:
-                    queryset = models.NfcListOfUsers.objects.get(userKeys=userKeys)
-                    print('part 3')
-                    return Response({'returnVal' : queryset.dacRequestP3(userKeys, aesEncryptedNfcPW, aesSalt)})
+            #if userKeys is not None and aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None :
+            if userKeys is not None and keyHash is not None and TDAT3 is not None :
+                queryset = models.NfcKey.objects.filter(keyUUID=userKeys)
+                if queryset :
+                    queryset = models.NfcKey.objects.get(keyUUID=userKeys)
+                    queryset2 = models.NfcListOfUsers.objects.filter(userKeys=queryset.getId())
+                    if queryset2:
+                        queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
+                        print('part 2')
+                        if queryset:
+                            print('part 3')
+                            doorHandleHash = queryset2.dacRequestP3(userKeys,keyHash,TDAT3)
+
+                            return Response({'returnVal' : doorHandleHash})
 
         return Response({'Error no falid value entered'})

@@ -36,6 +36,8 @@ from Crypto.Cipher import AES
 import base64
 
 BLOCK_SIZE=32
+
+#TODO implement patting for strings not a multiple of 16
 class AES128CryptoLib():
     def encrypt(sef, message, passphrase, IV):
         """ function to encrypt with AES. (message, passphase, IV)"""
