@@ -182,16 +182,19 @@ class NfcListOfUsers(models.Model):
             #old version that worked for savty
             #sha256Hash = hashlib.sha256((self.TDAT+re.sub('-', '',str(i.doorUDID))).encode('ASCII'))
             print("\nSERVER hexed to hash: String(TDAT + UDID)")
-            print("input:" + toHashStr)
-            print("output:" +str(sha256Hash.hexdigest()))
-            print("\nREMOTE hexed to hash: String(TDAT + UDID)")
+            print("input:\t" + toHashStr)
+            print("output:\t" +str(sha256Hash.hexdigest()))
+            print("\nREMOTE hexed to hash: SHA256(String(TDAT + UDID))")
             print(str(ecUDID))
             print("\ngoint to compare calculated and hashed SHA256 Hash")
             print("server-hashed: "+sha256Hash.hexdigest())
             print("remote-hasehd: "+ ecUDID)
             if str(ecUDID) == str(sha256Hash.hexdigest()):
+                print("\n--------------------------------------------")
+
                 print("\ncalculated SHA256 Hash and recieve Hash found a mach")
                 print("\tfound UDID of the accesing Door is: \n\t"+i.doorUDID)
+                print("\n--------------------------------------------")
 
                 print("\n\nsetup Data for enshuring encrypted communication")
                 iv = get_random_string(16)
@@ -332,6 +335,7 @@ class NfcDACPhase2(models.Model):
 
 class NfcDACPhase3(models.Model):
     userKeys = models.CharField(max_length=20)
-    aesEncryptedNfcPw = models.CharField(max_length=16)
-    aesSalt = models.CharField(max_length=16)
+    #aesEncryptedNfcPw = models.CharField(max_length=16)
+    keyHash = models.CharField(max_length=16)
+    #aesSalt = models.CharField(max_length=16)
     TDAT3 = models.CharField(max_length=32)
