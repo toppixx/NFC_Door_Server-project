@@ -263,16 +263,18 @@ class NfcListOfUsers(models.Model):
                         aesCryptor = AesCryption.AES128CryptoLib()
                         cypherText = aesCryptor.encrypt(plainText, encryptionKey, iv)
 
-                        print("iv" + iv)
-                        print("encryptionKey" + encryptionKey)
-                        print("plainTxt" + plainText)
-                        print("cypherText" + str(cypherText))
-
                         plainTxtDecrypt = aesCryptor.decrypt(cypherText,encryptionKey,iv)
-                        print("decypted Text" + str(plainTxtDecrypt))
+
+                        print("iv:\t\t" + iv)
+                        print("encryptionKey:\t" + encryptionKey)
+                        print("plainTxt:\t" + plainText)
+                        print("cypherText:\t" + str(cypherText))
+                        print("For testing:")
+                        print("decyptedText:\t" + str(plainTxtDecrypt))
+
                         return cypherText.hex() , bytes(iv,'ascii').hex()
 
-        print("\ncomparing SHA256 Hashes failed")
+        print("\ncomparing SHA256 Hashes failed!!!")
         return 'fail', 'fail'
 
     def dacRequestP3(self, uuid, aesEncryptedNfcPw,aesSalt):
