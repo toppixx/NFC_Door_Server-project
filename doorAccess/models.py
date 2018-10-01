@@ -284,6 +284,9 @@ class NfcListOfUsers(models.Model):
     def dacRequestP3(self,uuid, keyHash, TDAT3):
         #TODO decrypt keyHash check Permission and return DoorHandle if true else -1
         #debugStyle
+        print("uuid:\t%s" %(uuid))
+        print("keyHash:\t%s" %(keyHash))
+        print("TDAT3:\t %s" %(TDAT3))
         if(uuid==self.accessingUUID):
             rowKeyList = 0
             for n in self.userKeys.all():
@@ -292,18 +295,113 @@ class NfcListOfUsers(models.Model):
                 print("compatre:\n" + n.keyUUID + " (keyListElement UUID)")
                 print(self.accessingUUID + " (accesing UUID()\n")
                 if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
-                    print("going to decrypt the cypher text with Setion AES Encryption Key fof the Connection")
+                    print("going to decrypt the cypher text with Setion AES Encryption Key of the Connection")
                     iv = self.encryptionSalt
                     encryptionKey = self.encryptionKey
-                    cipherText = keyHash
+
+                    print("string length %d" %(len(keyHash)))
+
+                    # testl = bytearray(keyHash)
+                    # print("testl")
+                    # print(testl)
+
+                    # byteArr = []
+                    hexArr = ( keyHash.split(" ") )
+                    print("hexArr")
+                    print(hexArr)
+                    # print("len of hex-CipherText %d"%( len(hexStr)))
+                    hexStr = ""
+                    for i in range(0,len(hexArr)):
+                        hexArr[i] = hexArr[i].zfill(2)
+                        hexStr = hexStr + hexArr[i] + ' '
+
+                    #hexStr = ''.join(hexArr)
+                    print("hexStr")
+                    print(hexStr)
+
+                    cipherText = bytearray.fromhex(''.join(hexStr))
+                    print("cipherText\n\n")
+
+                    print(cipherText)
+                    print("\n\n")
+                    #print(bytes(byteArr))
                     aesCryptor = AesCryption.AES128CryptoLib()
-                    plainTxtDecrypt = aesCryptor.decrypt(cipherText,encryptionKey,iv)
+
+                    plainTxtDecrypt = aesCryptor.decrypt(bytes(cipherText),encryptionKey,iv)
+
+                    testTxt = aesCryptor.encrypt("TestTestTestTest", encryptionKey, iv)
+                    print("testTxt")
+                    print(testTxt)
+
+                    #plainTx
+
+                    # print(keyHash)
+                    # print(hexStr)
+                    # print("testi")
+                    # print(testi)
+                    # print(bytes(testi))
+                    #
+                    # hexStr = ''.join( hexStr )
+                    # print("hexStr: ")
+                    # print(hexStr)
+                    # print("\n")
+                    # for i in range(0, len(hexStr), 2):
+                    #     byteArr.append( hex( int (hexStr[i:i+2], 16 )  ))
+                    # # print("bytes:")
+                    # # print("\n")
+                    # # print(byteArr)
+                    # #cipherBytes =  ''.join( bytes )
+                    # #test=str(cipherBytes)
+                    #
+                    # #key = base64.b16decode(cipherBytes)
+                    # #print("\nkey\n")
+                    # #print(key)
+                    # # print("test\n")
+                    # # #print(test)
+                    # # #print("\n\n")
+                    # # #print(len(test))
+                    # # print("\n\n")
+                    # # print("cipherBytes:")
+                    # # print("\n")
+                    # # #print(cipherBytes)
+                    # # print("\n")
+                    # #print("len(cipherBytes):%d" %(len(cipherBytes)))
+                    # #print("cipherText:\t%s"%(cipherBytes))
+                    # aesCryptor = AesCryption.AES128CryptoLib()
+                    # # print("going to decrypt")
+                    # # #cipherBytes = "12345678901234561234567890123456"
+                    # # print("cipherBytes Len:\t%d"%(len(cipherBytes)))
+                    # # print("encryptionKey Len:\t%d"%(len(encryptionKey)))
+                    # # print("iv Len:\t\t\t%d"%(len(iv)))
+                    # # print("bytes")
+                    # # print(bytes)
+                    # #
+                    # # print("encryptionKey")
+                    # # print(encryptionKey)
+                    # # ek = "asdf"
+                    # # #t = bytes(ek,'ascii')
+                    # # te= ''.join(bytes)
+                    # # print(te)
+                    # #
+                    # # test = bytes(cipherBytes)
+                    # print(byteArr)
+                    # print("print(bytes(byteArr))")
+                    # te= ''.join(chr(int(byteArr[c],16)) for c in range(0, len(byteArr)))
+                    # print("\n\n")
+                    # print(te)
+                    # print("\n\n")
+
+                    #print(bytes(byteArr))
+                    # plainTxtDecrypt = aesCryptor.decrypt(bytes(testi),encryptionKey,iv)
+                    #plainTxtDecrypt = aesCryptor.decrypt(bytes(cipherBytes),encryptionKey,iv)
 
                     print("iv:\t\t" + iv)
                     print("encryptionKey:\t" + encryptionKey)
-                    print("cipherText:\t" + str(cipherText))
-                    print("For testing:")
-                    print("decyptedText:\t" + str(plainTxtDecrypt))
+                    print("plainText:\t" + str(plainTxtDecrypt))
+                    print("plainText:\t" + str((plainTxtDecrypt)))
+
+                    # print("For testing:")
+                    # print("decyptedText:\t" + str(plainTxtDecrypt))
 
                     #print("decyptedText:\t" + str(plainTxtDecrypt.decode('ASCII')))
 
@@ -346,6 +444,6 @@ class NfcDACPhase2(models.Model):
 class NfcDACPhase3(models.Model):
     userKeys = models.CharField(max_length=20)
     #aesEncryptedNfcPw = models.CharField(max_length=16)
-    keyHash = models.CharField(max_length=16)
+    keyHash = models.CharField(max_length=95)
     #aesSalt = models.CharField(max_length=16)
     TDAT3 = models.CharField(max_length=32)

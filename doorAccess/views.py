@@ -290,6 +290,7 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
 
     def create(self, request, pk=None):
         serializer = serializers.NfcDooorAcContPhase3Serializer(data=request.data)
+        print(serializer)
         if serializer.is_valid():
             userKeys = request.data.get('userKeys')
             keyHash = request.data.get('keyHash')
