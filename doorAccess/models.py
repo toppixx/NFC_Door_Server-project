@@ -14,6 +14,7 @@ import base64
 import codecs
 import binascii
 
+from doorAccess import TDAT
 
 from Crypto.Cipher import AES
 
@@ -154,8 +155,7 @@ class NfcListOfUsers(models.Model):
         for i in self.userKeys.all():
             if re.sub('-', '',str(i.keyUUID)) == re.sub('-', '',str(uuid)):
                 self.accessingUUID = re.sub('-', '',str(uuid))
-                self.TDAT =  get_random_string(32)
-        #self.timeStamp = os.timeStamp()
+                self.TDAT =  TDAT.TDATchecker().init()
             self.save()
             return str(self.TDAT)
         return 'fail'
@@ -177,10 +177,8 @@ class NfcListOfUsers(models.Model):
 
             toHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID)))
 
-            #toHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID))).encode('ASCII'))
             sha256Hash = hashlib.sha256(toHashStr.encode('ASCII'))
-            #old version that worked for savty
-            #sha256Hash = hashlib.sha256((self.TDAT+re.sub('-', '',str(i.doorUDID))).encode('ASCII'))
+
             print("\nSERVER hexed to hash: String(TDAT + UDID)")
             print("input:\t" + toHashStr)
             print("output:\t" +str(sha256Hash.hexdigest()))
@@ -200,10 +198,10 @@ class NfcListOfUsers(models.Model):
                 iv = get_random_string(16)
                 print("generated Salt (iv) for AES encryption is:\n\t"+iv)
                 print("\nstoring Data of the Accesing UUID and UDID for next actions")
-                self.accessingUUID = uuid #self.accesingUDID
+                self.accessingUUID = uuid
                 self.encryptionSalt = iv
                 self.accesingUDID = i.doorUDID
-                self.encryptionKey = i.doorUDID #self.accesingUDID
+                self.encryptionKey = i.doorUDID
                 self.save()
 
                 print("\n--checking allowence of the accesing UUID--")
@@ -216,65 +214,22 @@ class NfcListOfUsers(models.Model):
                     print("compatre:\n" + n.keyUUID + " (keyListElement UUID)")
                     print(self.accessingUUID + " (accesing UUID()\n")
                     if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
-                        #aesEncryption = AesCryption.AESCipher((str(self.encryptionKey)).encode('utf-8'))
-                        #return aesEncryption.encrypt(n.AESEncryptKey)
-                        # print("\n\raesEncryptKeyOfNFCTag")
-                        # print(n.AESEncryptKey)
-                        # print("\n\rsalt")
-                        # print(self.encryptionSalt)
-                        # print("\n\rencryption Key")
-                        # print(self.encryptionKey)
-                        # self.encryptionSalt = "f3Dnj6J0F3y9cVJI"
-                        # print("\n\rhex ecryption Salt")
-                        # print(bytes(self.encryptionSalt,'ascii'))
-                        # print("\n\rhex AESEncrypted Key plain text")
-                        #
-                        # print(bytes(self.encryptionSalt,'ascii').hex())
-                        # print(bytes(n.AESEncryptKey, 'ascii'))
-                        # print(bytes(n.AESEncryptKey, 'ascii').hex())
-                        # print("\n\rhex encryption key")
-                        #
-                        # print(bytes(self.encryptionKey, 'ascii'))
-                        # print(bytes(self.encryptionKey, 'ascii').hex())
-                        # cypher = str(AesCryption.encrypt(bytes(n.AESEncryptKey, 'ascii'), bytes(self.encryptionKey, 'ascii'), bytes(self.encryptionSalt,'ascii')).hex())
-                        # #salt = self.encryptionSalt
-                        #
-                        # ''.join(hex(ord(x))[2:] for x in self.encryptionSalt)
-                        # #salt = binascii.hexlify(self.encryptionSalt);
-                        # key = bytes(self.encryptionKey, 'ascii')
-                        # salt = self.encryptionSalt
-                        # cipher = AES.new(key, AES.MODE_CBC, salt)
-                        # msg = cipher.encrypt(b'Attack at dawn12')
-                        # # cipher.nonce = bytes(self.encryptionSalt,'ascii')
-                        # print("msg")
-                        # print(msg.hex())
-                        # print("salt")
-                        # print(salt)
-                        # print()
-                        # print("cypher")
-                        # print(cypher)
-                        # print("salt")
-                        # print(salt)
-                        #return msg , salt
-
-                        #iv = "TestTestTestTest"
-
 
                         print("going to cypher the AES Encryption Key of the NFC-Tag")
                         iv = self.encryptionSalt
                         encryptionKey = self.encryptionKey
                         plainText = n.AESEncryptKey
+
                         aesCryptor = AesCryption.AES128CryptoLib()
                         cypherText = aesCryptor.encrypt(plainText, encryptionKey, iv)
-
-                        plainTxtDecrypt = aesCryptor.decrypt(cypherText,encryptionKey,iv)
+                        #plainTxtDecrypt = aesCryptor.decrypt(cypherText,encryptionKey,iv)
 
                         print("iv:\t\t" + iv)
                         print("encryptionKey:\t" + encryptionKey)
                         print("plainTxt:\t" + plainText)
                         print("cypherText:\t" + str(cypherText))
-                        print("For testing:")
-                        print("decyptedText:\t" + str(plainTxtDecrypt))
+                        #print("For testing:")
+                        #print("decyptedText:\t" + str(plainTxtDecrypt))
 
                         return cypherText.hex() , bytes(iv,'ascii').hex()
 
@@ -299,49 +254,27 @@ class NfcListOfUsers(models.Model):
                     iv = self.encryptionSalt
                     encryptionKey = self.encryptionKey
 
-                    print("string length %d" %(len(keyHash)))
-
-                    # testl = bytearray(keyHash)
-                    # print("testl")
-                    # print(testl)
-
-                    # byteArr = []
                     hexArr = ( keyHash.split(" ") )
-                    print("hexArr")
-                    print(hexArr)
-                    # print("len of hex-CipherText %d"%( len(hexStr)))
                     hexStr = ""
                     for i in range(0,len(hexArr)):
                         hexArr[i] = hexArr[i].zfill(2)
                         hexStr = hexStr + hexArr[i] + ' '
 
-                    #hexStr = ''.join(hexArr)
-                    print("hexStr")
-                    print(hexStr)
-
                     cipherText = bytearray.fromhex(''.join(hexStr))
-                    print("cipherText\n\n")
-
-                    print(cipherText)
-                    print("\n\n")
-                    #print(bytes(byteArr))
                     aesCryptor = AesCryption.AES128CryptoLib()
-
                     plainTxtDecrypt = aesCryptor.decrypt(bytes(cipherText),encryptionKey,iv)
 
                     print("iv:\t\t" + iv)
                     print("encryptionKey:\t" + encryptionKey)
                     print("cipherText:\t" + str(cipherText))
                     print("plainText:\t" + str((plainTxtDecrypt)))
+                    print("UTID:\t\t" + str(n.keyUTID ))
+                    print("UTID bytes:\t"+ str(bytes(n.keyUTID,'ascii')))
+                    #print("plainTxt:\t"+str(plainTxtDecrypt.decode('ASCII' )))
+                    print(bytes(bytearray.fromhex(''.join(hexStr))))
 
-                    # print("For testing:")
-                    # print("decyptedText:\t" + str(plainTxtDecrypt))
-
-                    #print("decyptedText:\t" + str(plainTxtDecrypt.decode('ASCII')))
-                    print("self.keyUTID:\t" + str(n.keyUTID ))
-                    print("plainTxtDecrypt:\t"+str(plainTxtDecrypt ))
-                    if(str(n.keyUTID) == str(plainTxtDecrypt.decode('ASCII'))):
-                        return 'true'
+                    #if(str(n.keyUTID) == str(plainTxtDecrypt.decode('ASCII'))):
+                    #    return 'true'
 
                 else:
                     return 'uuid not found'
@@ -365,8 +298,6 @@ class NfcListOfUsers(models.Model):
 
     def __str__(self):
         """django useses this when it need to convert the object to a string"""
-        #print(str(self))
-        #return json.loads(str(self))
         return self.userName
 
 #recieves UUID of NFC-TAg and sends TDAT
