@@ -328,76 +328,10 @@ class NfcListOfUsers(models.Model):
                     aesCryptor = AesCryption.AES128CryptoLib()
 
                     plainTxtDecrypt = aesCryptor.decrypt(bytes(cipherText),encryptionKey,iv)
-
-                    testTxt = aesCryptor.encrypt("TestTestTestTest", encryptionKey, iv)
-                    print("testTxt")
-                    print(testTxt)
-
-                    #plainTx
-
-                    # print(keyHash)
-                    # print(hexStr)
-                    # print("testi")
-                    # print(testi)
-                    # print(bytes(testi))
-                    #
-                    # hexStr = ''.join( hexStr )
-                    # print("hexStr: ")
-                    # print(hexStr)
-                    # print("\n")
-                    # for i in range(0, len(hexStr), 2):
-                    #     byteArr.append( hex( int (hexStr[i:i+2], 16 )  ))
-                    # # print("bytes:")
-                    # # print("\n")
-                    # # print(byteArr)
-                    # #cipherBytes =  ''.join( bytes )
-                    # #test=str(cipherBytes)
-                    #
-                    # #key = base64.b16decode(cipherBytes)
-                    # #print("\nkey\n")
-                    # #print(key)
-                    # # print("test\n")
-                    # # #print(test)
-                    # # #print("\n\n")
-                    # # #print(len(test))
-                    # # print("\n\n")
-                    # # print("cipherBytes:")
-                    # # print("\n")
-                    # # #print(cipherBytes)
-                    # # print("\n")
-                    # #print("len(cipherBytes):%d" %(len(cipherBytes)))
-                    # #print("cipherText:\t%s"%(cipherBytes))
-                    # aesCryptor = AesCryption.AES128CryptoLib()
-                    # # print("going to decrypt")
-                    # # #cipherBytes = "12345678901234561234567890123456"
-                    # # print("cipherBytes Len:\t%d"%(len(cipherBytes)))
-                    # # print("encryptionKey Len:\t%d"%(len(encryptionKey)))
-                    # # print("iv Len:\t\t\t%d"%(len(iv)))
-                    # # print("bytes")
-                    # # print(bytes)
-                    # #
-                    # # print("encryptionKey")
-                    # # print(encryptionKey)
-                    # # ek = "asdf"
-                    # # #t = bytes(ek,'ascii')
-                    # # te= ''.join(bytes)
-                    # # print(te)
-                    # #
-                    # # test = bytes(cipherBytes)
-                    # print(byteArr)
-                    # print("print(bytes(byteArr))")
-                    # te= ''.join(chr(int(byteArr[c],16)) for c in range(0, len(byteArr)))
-                    # print("\n\n")
-                    # print(te)
-                    # print("\n\n")
-
-                    #print(bytes(byteArr))
-                    # plainTxtDecrypt = aesCryptor.decrypt(bytes(testi),encryptionKey,iv)
-                    #plainTxtDecrypt = aesCryptor.decrypt(bytes(cipherBytes),encryptionKey,iv)
-
+                    
                     print("iv:\t\t" + iv)
                     print("encryptionKey:\t" + encryptionKey)
-                    print("plainText:\t" + str(plainTxtDecrypt))
+                    print("cipherText:\t" + str(cipherText))
                     print("plainText:\t" + str((plainTxtDecrypt)))
 
                     # print("For testing:")
