@@ -328,7 +328,7 @@ class NfcListOfUsers(models.Model):
                     aesCryptor = AesCryption.AES128CryptoLib()
 
                     plainTxtDecrypt = aesCryptor.decrypt(bytes(cipherText),encryptionKey,iv)
-                    
+
                     print("iv:\t\t" + iv)
                     print("encryptionKey:\t" + encryptionKey)
                     print("cipherText:\t" + str(cipherText))
@@ -338,6 +338,10 @@ class NfcListOfUsers(models.Model):
                     # print("decyptedText:\t" + str(plainTxtDecrypt))
 
                     #print("decyptedText:\t" + str(plainTxtDecrypt.decode('ASCII')))
+                    print("self.keyUTID:\t" +self.keyUTID )
+                    print("plainTxtDecrypt:\t"+plainTxtDecrypt )
+                    if(self.keyUTID == plainTxtDecrypt)
+                        return 'true'
 
                 else:
                     return 'uuid not found'
