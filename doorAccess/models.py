@@ -340,7 +340,7 @@ class NfcListOfUsers(models.Model):
                     #print("decyptedText:\t" + str(plainTxtDecrypt.decode('ASCII')))
                     print("self.keyUTID:\t" + str(n.keyUTID ))
                     print("plainTxtDecrypt:\t"+str(plainTxtDecrypt ))
-                    if(str(n.keyUTID) == str(plainTxtDecrypt)):
+                    if(str(n.keyUTID) == str(plainTxtDecrypt.decode('ASCII'))):
                         return 'true'
 
                 else:
