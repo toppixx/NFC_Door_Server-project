@@ -96,7 +96,7 @@ class NfcDoor(models.Model):
     """Model of a Door"""
     nameOfDoor   = models.CharField(max_length=255, default="door with no Name")
     doorUDID     = models.CharField(max_length=16, default=get_random_string(16))#, editable=False)
-
+    permissionStr= models.CharField(max_length=32, default=get_random_string(32))
     def __str__(self):
         """django useses this when it need to convert the object to a string"""
         return self.nameOfDoor

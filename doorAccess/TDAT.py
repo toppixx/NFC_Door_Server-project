@@ -30,15 +30,16 @@ from django.utils.crypto import get_random_string
 #
 #
 class TDATchecker():
-    def update(self, oldTDAT, , passphrase, IV):
-        toHashStr = tdat+passphrase+IV
+    def update(self, oldTDAT, passphrase, iv):
+        toHashStr = oldTDAT+passphrase+iv
         return hashlib.sha256(toHashStr.encode('ASCII'))
 
 
     def check(self,incTDAT, oldTDAT, passphrase, iv):
-        toHashStr = tdat+passphrase+IV
+
+        toHashStr = oldTDAT+passphrase+iv
         tdat = hashlib.sha256(toHashStr.encode('ASCII'))
-        if(tdat==self.TDAT):
+        if(tdat==incTDAT):
             return True
         else:
             return False
