@@ -306,6 +306,8 @@ class NfcListOfUsers(models.Model):
                             aesCryptor = AesCryption.AES128CryptoLib()
                             cipherText = aesCryptor.encrypt(str(sha256Hash.hexdigest()),encryptionKey,iv)
                             print("cipherText:\t"+str(cipherText))
+                            print("cipherText: (hex)\t"+str(cipherText.hex()))
+
                             return cipherText.hex()
 
                     #listOfDoors->Door->UDID
