@@ -247,9 +247,9 @@ class NfcListOfUsers(models.Model):
             for key in self.userKeys.all():
                 rowKeyList = rowKeyList +1;
                 print("\nkeyList row %d :" %(rowKeyList))
-                print("compatre:\n" + keykeyUUID + " (keyListElement UUID)")
+                print("compatre:\n" + key.keyUUID + " (keyListElement UUID)")
                 print(self.accessingUUID + " (accesing UUID()\n")
-                if re.sub('-', '',str(keykeyUUID)) == re.sub('-', '',str(self.accessingUUID)):
+                if re.sub('-', '',str(key.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                     print("going to decrypt the cypher text with Setion AES Encryption Key of the Connection")
                     iv = self.encryptionSalt
                     encryptionKey = self.encryptionKey
@@ -268,8 +268,8 @@ class NfcListOfUsers(models.Model):
                     print("encryptionKey:\t" + encryptionKey)
                     print("cipherText:\t" + str(cipherText))
                     print("plainText:\t" + str((plainTxtDecrypt)))
-                    print("UTID:\t\t" + str(keykeyUTID ))
-                    print("UTID bytes:\t"+ str(bytes(keykeyUTID,'ascii')))
+                    print("UTID:\t\t" + str(key.keyUTID ))
+                    print("UTID bytes:\t"+ str(bytes(key.keyUTID,'ascii')))
                     #print("plainTxt:\t"+str(plainTxtDecrypt.decode('ASCII' )))
                     print(bytes(bytearray.fromhex(''.join(hexStr))))
                     for door in self.listOfDoors.all():
@@ -279,18 +279,18 @@ class NfcListOfUsers(models.Model):
                         print("doordoorUDID:\t" + str(doordoorUDID))
                         print("self.accesingUDID:\t" + str(self.accesingUDID))
 
-                        print("keykeyUTID== plainTxtDecrypt")
-                        print(keykeyUTID== plainTxtDecrypt.decode('ascii'))
+                        print("key.keyUTID== plainTxtDecrypt")
+                        print(key.keyUTID== plainTxtDecrypt.decode('ascii'))
                         print(plainTxtDecrypt.decode('ascii'))
                         print(str(plainTxtDecrypt.decode('ascii')))
 
-                        print(str(keykeyUTID)== str(plainTxtDecrypt.decode('ascii')))
+                        print(str(key.keyUTID)== str(plainTxtDecrypt.decode('ascii')))
 
-                        print("keykeyUTID:\t" + str(keykeyUTID))
+                        print("key.keyUTID:\t" + str(key.keyUTID))
                         print("plainTxtDecrypt:\t" + str(plainTxtDecrypt.decode('ascii')))
-                        print("str(bytes(keykeyUTID,'ascii'):\t" + keykeyUTID)
+                        print("str(bytes(key.keyUTID,'ascii'):\t" + key.keyUTID)
 
-                        if doordoorUDID == self.accesingUDID and keykeyUTID== plainTxtDecrypt.decode('ascii'):
+                        if doordoorUDID == self.accesingUDID and key.keyUTID== plainTxtDecrypt.decode('ascii'):
                             print("true")
                             print("self.TDAT")
                             print(self.TDAT)
