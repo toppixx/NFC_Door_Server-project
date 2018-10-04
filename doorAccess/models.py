@@ -272,7 +272,12 @@ class NfcListOfUsers(models.Model):
                     print("UTID bytes:\t"+ str(bytes(n.keyUTID,'ascii')))
                     #print("plainTxt:\t"+str(plainTxtDecrypt.decode('ASCII' )))
                     print(bytes(bytearray.fromhex(''.join(hexStr))))
+                    for m in self.listOfDoors.all():
+                        if m.DoorUDID == plainTxtDecrypt:
+                            return 'true'
 
+
+                    #listOfDoors->Door->UDID
                     #if(str(n.keyUTID) == str(plainTxtDecrypt.decode('ASCII'))):
                     #    return 'true'
 
