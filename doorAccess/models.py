@@ -285,7 +285,7 @@ class NfcListOfUsers(models.Model):
                         print("plainTxtDecrypt:\t" + str(plainTxtDecrypt.decode('ascii')))
                         print("str(bytes(n.keyUTID,'ascii'):\t" + n.keyUTID)
 
-                        if m.doorUDID == self.accesingUDID and n.keyUTID== str(plainTxtDecrypt).decode('ascii')):
+                        if m.doorUDID == self.accesingUDID and n.keyUTID== str(plainTxtDecrypt.decode('ascii')):
                             print(true)
                             return 'true'
 
