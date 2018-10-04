@@ -302,9 +302,9 @@ class NfcListOfUsers(models.Model):
                             print(sha256Hash)
                             print("sha256Hash.hexdigest()")
 
-                            print(str(sha256Hash.hexdigest()))
+                            print(str(sha256Hash))
                             aesCryptor = AesCryption.AES128CryptoLib()
-                            cipherText = aesCryptor.encrypt(str(sha256Hash.hexdigest()),encryptionKey,iv)
+                            cipherText = aesCryptor.encrypt(str(sha256Hash),encryptionKey,iv)
                             print("cipherText:\t"+str(cipherText))
                             return cipherText.hex()
 
