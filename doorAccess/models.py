@@ -244,12 +244,12 @@ class NfcListOfUsers(models.Model):
         print("TDAT3:\t %s" %(TDAT3))
         if(uuid==self.accessingUUID):
             rowKeyList = 0
-            for n in self.userKeys.all():
+            for key in self.userKeys.all():
                 rowKeyList = rowKeyList +1;
                 print("\nkeyList row %d :" %(rowKeyList))
-                print("compatre:\n" + n.keyUUID + " (keyListElement UUID)")
+                print("compatre:\n" + keykeyUUID + " (keyListElement UUID)")
                 print(self.accessingUUID + " (accesing UUID()\n")
-                if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
+                if re.sub('-', '',str(keykeyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                     print("going to decrypt the cypher text with Setion AES Encryption Key of the Connection")
                     iv = self.encryptionSalt
                     encryptionKey = self.encryptionKey
@@ -261,40 +261,40 @@ class NfcListOfUsers(models.Model):
                         hexStr = hexStr + hexArr[i] + ' '
 
                     cipherText = bytearray.fromhex(''.join(hexStr))
-                    aesCryptor = AesCryption.AES128CryptoLib()
+                    aesCryptor = AesCryptiokeyAES128CryptoLib()
                     plainTxtDecrypt = aesCryptor.decrypt(bytes(cipherText),encryptionKey,iv)
 
                     print("iv:\t\t" + iv)
                     print("encryptionKey:\t" + encryptionKey)
                     print("cipherText:\t" + str(cipherText))
                     print("plainText:\t" + str((plainTxtDecrypt)))
-                    print("UTID:\t\t" + str(n.keyUTID ))
-                    print("UTID bytes:\t"+ str(bytes(n.keyUTID,'ascii')))
+                    print("UTID:\t\t" + str(keykeyUTID ))
+                    print("UTID bytes:\t"+ str(bytes(keykeyUTID,'ascii')))
                     #print("plainTxt:\t"+str(plainTxtDecrypt.decode('ASCII' )))
                     print(bytes(bytearray.fromhex(''.join(hexStr))))
-                    for m in self.listOfDoors.all():
-                        print(m)
-                        print("m.doorUDID == self.accesingUDID")
-                        print(m.doorUDID == self.accesingUDID)
-                        print("m.doorUDID:\t" + str(m.doorUDID))
+                    for door in self.listOfDoors.all():
+                        print(door)
+                        print("doordoorUDID == self.accesingUDID")
+                        print(door.doorUDID == self.accesingUDID)
+                        print("doordoorUDID:\t" + str(doordoorUDID))
                         print("self.accesingUDID:\t" + str(self.accesingUDID))
 
-                        print("n.keyUTID== plainTxtDecrypt")
-                        print(n.keyUTID== plainTxtDecrypt.decode('ascii'))
+                        print("keykeyUTID== plainTxtDecrypt")
+                        print(keykeyUTID== plainTxtDecrypt.decode('ascii'))
                         print(plainTxtDecrypt.decode('ascii'))
                         print(str(plainTxtDecrypt.decode('ascii')))
 
-                        print(str(n.keyUTID)== str(plainTxtDecrypt.decode('ascii')))
+                        print(str(keykeyUTID)== str(plainTxtDecrypt.decode('ascii')))
 
-                        print("n.keyUTID:\t" + str(n.keyUTID))
+                        print("keykeyUTID:\t" + str(keykeyUTID))
                         print("plainTxtDecrypt:\t" + str(plainTxtDecrypt.decode('ascii')))
-                        print("str(bytes(n.keyUTID,'ascii'):\t" + n.keyUTID)
+                        print("str(bytes(keykeyUTID,'ascii'):\t" + keykeyUTID)
 
-                        if m.doorUDID == self.accesingUDID and n.keyUTID== plainTxtDecrypt.decode('ascii'):
+                        if doordoorUDID == self.accesingUDID and keykeyUTID== plainTxtDecrypt.decode('ascii'):
                             print("true")
                             print("self.TDAT")
                             print(self.TDAT)
-                            toHashStr = (self.TDAT+accesTrue)
+                            toHashStr = (self.TDAT+doorpermissionStr)
                             sha256Hash = hashlib.sha256(toHashStr.encode('ascii'))
                             aesCryptor = AesCryption.AES128CryptoLib()
                             cipherText = aesCryptor.encrypt(sha256Hash,encryptionKey,iv)
