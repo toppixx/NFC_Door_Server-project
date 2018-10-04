@@ -261,7 +261,7 @@ class NfcListOfUsers(models.Model):
                         hexStr = hexStr + hexArr[i] + ' '
 
                     cipherText = bytearray.fromhex(''.join(hexStr))
-                    aesCryptor = AesCryptiokeyAES128CryptoLib()
+                    aesCryptor = AesCryption.AES128CryptoLib()
                     plainTxtDecrypt = aesCryptor.decrypt(bytes(cipherText),encryptionKey,iv)
 
                     print("iv:\t\t" + iv)
