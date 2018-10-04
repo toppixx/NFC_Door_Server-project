@@ -297,7 +297,6 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
             #aesEncryptedNfcPW = request.data.get('aesEncryptedNfcPw')
             #aesSalt = request.data.get('aesSalt')
             TDAT3 = request.data.get('TDAT3')
-            print('part 1')
             #if userKeys is not None and aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None :
             if userKeys is not None and keyHash is not None and TDAT3 is not None :
                 queryset = models.NfcKey.objects.filter(keyUUID=userKeys)
@@ -306,11 +305,8 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
                     queryset2 = models.NfcListOfUsers.objects.filter(userKeys=queryset.getId())
                     if queryset2:
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
-                        print('part 2')
                         if queryset:
-                            print('part 3')
                             doorHandleHash = queryset2.dacRequestP3(userKeys,keyHash,TDAT3)
-
-                            return Response({'returnVal' : doorHandleHash})
+                            return Response({'accessToken' : doorHandleHash})
 
         return Response({'Error no falid value entered'})

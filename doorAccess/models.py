@@ -292,8 +292,14 @@ class NfcListOfUsers(models.Model):
 
                         if m.doorUDID == self.accesingUDID and n.keyUTID== plainTxtDecrypt.decode('ascii'):
                             print("true")
-                            return 'true'
+                            print("self.TDAT")
+                            print(self.TDAT)
+                            toHashStr = (self.TDAT+accesTrue)
+                            sha256Hash = hashlib.sha256(toHashStr.encode('ascii'))
+                            aesCryptor = AesCryption.AES128CryptoLib()
+                            cipherText = aesCryptor.encrypt(sha256Hash,encryptionKey,iv)
 
+                            return cipherText.hex()
 
                     #listOfDoors->Door->UDID
                     #if(str(n.keyUTID) == str(plainTxtDecrypt.decode('ASCII'))):
@@ -306,6 +312,9 @@ class NfcListOfUsers(models.Model):
 
         return 'fail'
 
+
+    #def nextStep
+    #return SHA256(AES128(TDAT,encKey,iv))
     userName     = models.CharField(max_length=255)
 
     listOfDoorGroups = models.ManyToManyField(NfcDoorGroup, related_name='DoorGroup_NfcListOfUsers')
