@@ -295,12 +295,10 @@ class NfcListOfUsers(models.Model):
                             print("self.TDAT")
                             print(self.TDAT)
                             toHashStr = (self.TDAT+door.permissionStr)
-                            sha256Hash = hashlib.sha256(toHashStr.encode('ascii'))
-                            print(sha256Hash)
                             print(str(sha256Hash.hexdigest()))
                             aesCryptor = AesCryption.AES128CryptoLib()
                             cipherText = aesCryptor.encrypt(str(sha256Hash.hexdigest()),encryptionKey,iv)
-
+                            print("cipherText:\t"+str(cipherText))
                             return cipherText.hex()
 
                     #listOfDoors->Door->UDID
