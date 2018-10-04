@@ -297,6 +297,8 @@ class NfcListOfUsers(models.Model):
                             toHashStr = (self.TDAT+door.permissionStr)
                             sha256Hash = hashlib.sha256(toHashStr.encode('ascii'))
                             print(sha256Hash)
+                            print(str(sha256Hash))
+                            print(bytes(sha256Hash,'ascii'))
                             aesCryptor = AesCryption.AES128CryptoLib()
                             cipherText = aesCryptor.encrypt(str(sha256Hash),encryptionKey,iv)
 
