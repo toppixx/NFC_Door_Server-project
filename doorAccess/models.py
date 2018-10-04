@@ -274,7 +274,7 @@ class NfcListOfUsers(models.Model):
                     print(bytes(bytearray.fromhex(''.join(hexStr))))
                     for m in self.listOfDoors.all():
                         print(m)
-                        if m.doorUDID == plainTxtDecrypt:
+                        if m.doorUDID == self.accesingUDID and n.keyUTID== plainTxtDecrypt:
                             return 'true'
 
 
