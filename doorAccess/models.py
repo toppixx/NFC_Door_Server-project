@@ -274,9 +274,9 @@ class NfcListOfUsers(models.Model):
                     print(bytes(bytearray.fromhex(''.join(hexStr))))
                     for door in self.listOfDoors.all():
                         print(door)
-                        print("doordoorUDID == self.accesingUDID")
+                        print("door.doorUDID == self.accesingUDID")
                         print(door.doorUDID == self.accesingUDID)
-                        print("doordoorUDID:\t" + str(doordoorUDID))
+                        print("door.doorUDID:\t" + str(door.doorUDID))
                         print("self.accesingUDID:\t" + str(self.accesingUDID))
 
                         print("key.keyUTID== plainTxtDecrypt")
@@ -290,7 +290,7 @@ class NfcListOfUsers(models.Model):
                         print("plainTxtDecrypt:\t" + str(plainTxtDecrypt.decode('ascii')))
                         print("str(bytes(key.keyUTID,'ascii'):\t" + key.keyUTID)
 
-                        if doordoorUDID == self.accesingUDID and key.keyUTID== plainTxtDecrypt.decode('ascii'):
+                        if door.doorUDID == self.accesingUDID and key.keyUTID== plainTxtDecrypt.decode('ascii'):
                             print("true")
                             print("self.TDAT")
                             print(self.TDAT)
