@@ -273,7 +273,7 @@ class NfcListOfUsers(models.Model):
                     #print("plainTxt:\t"+str(plainTxtDecrypt.decode('ASCII' )))
                     print(bytes(bytearray.fromhex(''.join(hexStr))))
                     for m in self.listOfDoors.all():
-                        if m.DoorUDID == plainTxtDecrypt:
+                        if m.doorUDID == plainTxtDecrypt:
                             return 'true'
 
 
