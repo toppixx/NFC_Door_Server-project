@@ -279,7 +279,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.NfcDooorAcContPhase2Serializer
     queryset = models.NfcListOfUsers.objects.filter(TDAT='asdfalsjfljeroiqtoiJLKDJFLKJSALKFL')
     def create(self, request, pk=None):
-        print("\n\n========================================================================")
+        print("\n\n\n\n========================================================================")
         print("========================== Entering Phase 2!! ==========================")
         print("========================================================================")
         print("------------------------------------------------------------------------")
@@ -311,7 +311,7 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
     queryset = models.NfcListOfUsers.objects.filter(TDAT='asdfalsjfljeroiqtoiJLKDJFLKJSALKFL')
 
     def create(self, request, pk=None):
-        print("\n\n========================================================================")
+        print("\n\n\n\n========================================================================")
         print("========================== Entering Phase 3!! ==========================")
         print("========================================================================")
 

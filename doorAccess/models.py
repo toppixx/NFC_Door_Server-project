@@ -170,7 +170,6 @@ class NfcListOfUsers(models.Model):
         return 'fail'
 
     def dacRequestP2(self, uuid, ecUDID):
-        rowDoorList = 0
         print("Phase 2:\nRecieving a SHA256 Hash from remote calculated on TDAT+UDID, to get the Right UDID and encryption Key")
         print("going to calculate all SHA256(TDAT+UDID) Hashes of all Doors, comparing each with the recieved one")
         print("if a match is found the NFC-AES-KEY of the accessing NFC-Tag will be send encrypted to the UDID Terminal")
@@ -181,11 +180,13 @@ class NfcListOfUsers(models.Model):
             if re.sub('-', '',str(l.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                 print("found")
                 print("------------------------------------------------------------------------")
+                print("------------------------------------------------------------------------")
+                print("looking for the accessing door")
+                print("for this make a row and check all calculated SHA256 against the incoming SHA256")
+                print("------------------------------------------------------------------------")
                 for i in self.listOfDoors.all():
-                    rowDoorList = rowDoorList+1
-                    print("row %d:" %(rowDoorList))
                     ecUDID = ecUDID.lower()
-
+                    print("------------------------------------------------------------------------")
                     print("\nRemote Sha256 Hash SHA256(String(TDAT + UDID)):")
                     print(str(ecUDID))
                     print("------------------------------------------------------------------------")
@@ -270,6 +271,8 @@ class NfcListOfUsers(models.Model):
                 if re.sub('-', '',str(key.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                     print("found")
                     print("------------------------------------------------------------------------")
+                    print("------------------------------------------------------------------------")
+
                     print("going to decrypt the cypher text with Setion AES Encryption Key of the Connection\n")
                     iv = self.encryptionSalt
                     encryptionKey = self.encryptionKey
