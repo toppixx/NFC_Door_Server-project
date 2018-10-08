@@ -299,7 +299,7 @@ class NfcListOfUsers(models.Model):
                             print(toHashStr)
                             sha256Hash = hashlib.sha256(toHashStr.encode('ascii'))
                             print("sha256Hash")
-                            print(sha256Hash)
+                            print(sha256Hash.digest())
                             print("sha256Hash.hexdigest()")
 
                             print(str(sha256Hash.hexdigest()))
