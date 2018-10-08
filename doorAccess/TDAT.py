@@ -52,7 +52,7 @@ class TDATchecker():
         print("checking incommingTDAT against calculated next TDAT depending on oldTDAT")
         print("returning True or False depending on match\n")
 
-        newTDAT = calcSignature(oldTDAT, iv, encKey)
+        newTDAT = TDATchecker().calcSignature(oldTDAT, iv, encKey)
         print("incomingTDAT:\t"+incomingTDAT)
         print("new TDAT:\t"+newTDAT+"\n")
 
