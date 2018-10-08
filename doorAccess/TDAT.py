@@ -44,7 +44,7 @@ class TDATchecker():
         print("return SHA256(AES128(signature String))")
         print("signature:\t"+sha256Hash.hexdigest().upper())
         print("------------------------------------------------------------------------")
-        return sha256Hash
+        return sha256Hash.hexdigest().upper()
 
 
 
