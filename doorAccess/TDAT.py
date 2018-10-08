@@ -30,7 +30,7 @@ from django.utils.crypto import get_random_string
 #
 #
 class TDATchecker():
-    def calcSignature(self, sigStr, iv, encKey):
+    def calcSignature(sigStr, iv, encKey):
         print("------------------------------------------------------------------------")
         print("calculate next TDAT signature\n")
         print("signature String:\t" + sigStr)
@@ -47,7 +47,7 @@ class TDATchecker():
 
 
 
-    def check(self, incomingTDAT, oldTDAT, iv, encKey):
+    def check(incomingTDAT, oldTDAT, iv, encKey):
         print("------------------------------------------------------------------------")
         print("checking incommingTDAT against calculated next TDAT depending on oldTDAT")
         print("returning True or False depending on match\n")
