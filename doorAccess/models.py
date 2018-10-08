@@ -297,18 +297,31 @@ class NfcListOfUsers(models.Model):
                             toHashStr = (self.TDAT+door.permissionStr)
                             print("toHashStr")
                             print(toHashStr)
-                            sha256Hash = hashlib.sha256(toHashStr.encode('ascii'))
+
+                            aesCryptor = AesCryption.AES128CryptoLib()
+                            cipherText = aesCryptor.encrypt(str(toHashStr),encryptionKey,iv)
+                            print("cipherText:\t"+str(cipherText))
+                            print("cipherText: (hex)\t"+str(cipherText.hex()))
+
+                            sha256Hash = hashlib.sha256(cipherText.hex())
                             print("sha256Hash")
                             print(sha256Hash)
                             print("sha256Hash.hexdigest()")
                             print(str(sha256Hash.hexdigest()))
-                            
-                            aesCryptor = AesCryption.AES128CryptoLib()
-                            cipherText = aesCryptor.encrypt(str(sha256Hash.hexdigest()),encryptionKey,iv)
-                            print("cipherText:\t"+str(cipherText))
-                            print("cipherText: (hex)\t"+str(cipherText.hex()))
 
-                            return cipherText.hex()
+                            return sha256Hash.hexdigest()
+                            # sha256Hash = hashlib.sha256(toHashStr.encode('ascii'))
+                            # print("sha256Hash")
+                            # print(sha256Hash)
+                            # print("sha256Hash.hexdigest()")
+                            # print(str(sha256Hash.hexdigest()))
+                            #
+                            # aesCryptor = AesCryption.AES128CryptoLib()
+                            # cipherText = aesCryptor.encrypt(str(sha256Hash.hexdigest()),encryptionKey,iv)
+                            # print("cipherText:\t"+str(cipherText))
+                            # print("cipherText: (hex)\t"+str(cipherText.hex()))
+
+                            # return cipherText.hex()
 
                     #listOfDoors->Door->UDID
                     #if(str(n.keyUTID) == str(plainTxtDecrypt.decode('ASCII'))):
