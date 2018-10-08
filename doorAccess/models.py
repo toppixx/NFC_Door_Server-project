@@ -180,14 +180,14 @@ class NfcListOfUsers(models.Model):
             print("input:\t" + toHashStr)
             print("output:\t" +str(sha256Hash.hexdigest()))
 
-            print("\n--------------------------------------------")
-            print("\ncompare calculated and hashed SHA256 Hash")
+            print("--------------------------------------------")
+            print("compare calculated and hashed SHA256 Hash")
             print("server-hashed: "+sha256Hash.hexdigest())
             print("remote-hasehd: "+ ecUDID)
             if str(ecUDID) == str(sha256Hash.hexdigest()):
                 print("\ncalculated SHA256 Hash and recieve Hash mached")
-                print("\tfound UDID: \nUDID of the accesing Door is:\t"+i.doorUDID)
-                print("\n--------------------------------------------")
+                print("\tfound UDID: \n\tUDID of the accesing Door is:\t"+i.doorUDID)
+                print("--------------------------------------------")
 
                 print("\n\nsetup Data for enshuring encrypted communication")
                 iv = get_random_string(16)
@@ -199,7 +199,7 @@ class NfcListOfUsers(models.Model):
                 self.encryptionKey = i.doorUDID
                 self.save()
 
-                print("\n--checking allowence of the accesing UUID--")
+                print("\nchecking allowence of the accesing UUID")
                 #TODO i think this is already complited in views bevor calling dacRequestP2()
                 for door in self.listOfDoors.all():
                     if door.doorUDID == self.accesingUDID:
@@ -207,7 +207,7 @@ class NfcListOfUsers(models.Model):
                         for n in self.userKeys.all():
                             if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
 
-                                print("going to cypher the AES Encryption Key of the NFC-Tag")
+                                print("cypher the NFC-AES-Key of the NFC-Tag")
                                 iv = self.encryptionSalt
                                 encryptionKey = self.encryptionKey
                                 plainText = n.AESEncryptKey

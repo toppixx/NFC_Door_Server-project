@@ -47,8 +47,8 @@ class AES128CryptoLib():
         # #return base64.b64encode(aes.encrypt(message))
         # return (aes.encrypt(message))
         messageB = bytes(message, 'ascii')
-        print(messageB)
-        print(messageB.hex())
+        #print(messageB)
+        #print(messageB.hex())
         passphraseB = bytes(passphrase, 'ascii')
         IVB = bytes(IV, 'ascii')
         # passphrase MUST be 16, 24 or 32 bytes long, how can I do that ?
@@ -57,10 +57,10 @@ class AES128CryptoLib():
         #return base64.b64encode(aes.encrypt(message))
         #return aes.encrypt(messageB)
         cipher = aes.encrypt(messageB)
-        print("\n\rcipher")
-        print(cipher)
-        print(cipher.hex())
-        print("\n\r")
+        # print("\n\rcipher")
+        # print(cipher)
+        # print(cipher.hex())
+        # print("\n\r")
         return cipher
 
     def decrypt(self, encrypted, passphrase, IV):

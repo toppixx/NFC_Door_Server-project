@@ -240,17 +240,17 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
                         print("\n==========================\nPhase 1 successfully ended. \nReturning returnToken to CardReader!")
                         returnToken  = queryset2.dacRequestP1(userKey)
                         print("\treturnToken:  " + returnToken)
-                        print("==========================\n")
+                        print("==========================\n\n")
                         return Response({'returnToken' : returnToken})
-            print("\n==========================\nPhase 1 Failed !!!")
-            print("Error no falid value entered")
-            print("==========================\n")
-            return Response({'Error no falid value entered'})
-
-        else:
+        #     print("\n==========================\nPhase 1 Failed !!!")
+        #     print("Error no falid value entered")
+        #     print("==========================\n\n")
+        #     return Response({'fail'})
+        #
+        # else:
             print("\n==========================\nPhase 1 Error 404 !!!")
             print("404 Error")
-            print("==========================\n")
+            print("==========================\n\n")
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
     # def list(self, request):
@@ -281,7 +281,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                         cypher, iv = queryset2.dacRequestP2(userKey,udid)
                         print("\n==========================\nPhase 2 successfully ended. \nreturning return cypher and iv to CardReader!")
                         print("\tcypher:  " + cypher +"\n\tiv:  " + iv)
-                        print("==========================")
+                        print("==========================\n\n")
                         return Response({'cypher' : cypher, 'iv' : iv})
 
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
