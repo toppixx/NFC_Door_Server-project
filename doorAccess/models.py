@@ -248,9 +248,11 @@ class NfcListOfUsers(models.Model):
                                     print("searching for the key entry of the accessing UUID to get the right AES Encryption Key which one the NFC-Tag is encrypted\n")
                                     for n in self.userKeys.all():
                                         if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
-                                            print("found UDID!! \nUDID of the accesing Door is:\t"+i.doorUDID)
+                                            print("found UDID!! \nUDID of the accesing Door is:\t"+door.doorUDID)
                                             print("------------------------------------------------------------------------")
                                             print("------------------------------------------------------------------------")
+                                            print(uuid)
+                                            print(door.doorUDID)
                                             self.accessingUUID = uuid
                                             self.accesingUDID = door.doorUDID
                                             self.encryptionKey = door.doorUDID
