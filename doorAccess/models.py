@@ -199,7 +199,7 @@ class NfcListOfUsers(models.Model):
         print("if a match is found the NFC-AES-KEY of the accessing NFC-Tag will be send encrypted to the UDID Terminal")
         print("\n------------------------------------------------------------------------\n")
         print("looking for the right Key Entry in the KeyList")
-        if(true): #check old one
+        if(True): #check old one
             #self.TDAT = calcTDASignature(self.TDAT); #calc next one
             for l in self.userKeys.all():
                 if re.sub('-', '',str(l.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
