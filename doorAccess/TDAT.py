@@ -57,7 +57,7 @@ class TDATchecker():
         print("incomingTDAT:\t"+incomingTDAT)
         print("new TDAT:\t"+newTDAT+"\n")
 
-        if(incomingTDAT==sha256Hash):
+        if(incomingTDAT==newTDAT):
             print("matched")
             print("------------------------------------------------------------------------")
             return True
