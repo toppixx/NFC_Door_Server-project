@@ -312,8 +312,8 @@ class NfcListOfUsers(models.Model):
 
                     print("iv:\t\t" + iv)
                     print("encryptionKey:\t" + encryptionKey)
-                    print("cipherText:\t" + str(cipherText))
-                    print("plainText:\t" + str((plainTxtDecrypt)))
+                    print("cipherText:\t" + str(cipherText.hex().upper()))
+                    print("plainText:\t" + str((plainTxtDecrypt.decode('ascii'))))
                     print("UTID:\t\t" + str(key.keyUTID ))
                     print("------------------------------------------------------------------------")
 
