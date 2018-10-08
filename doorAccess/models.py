@@ -291,63 +291,69 @@ class NfcListOfUsers(models.Model):
         print("TDAT3:\t\t%s" %(tdat3))
         print("------------------------------------------------------------------------")
         print("------------------------------------------------------------------------")
-        print("looking for the right Key Entry in the KeyList\n")
-        if(uuid==self.accessingUUID):
-            rowKeyList = 0
-            for key in self.userKeys.all():
-                rowKeyList = rowKeyList +1;
-                print("compare:\n" + key.keyUUID + " (keyListElement UUID)\n"+self.accessingUUID + " (accesing UUID()\n")
-                if re.sub('-', '',str(key.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
-                    print("found")
-                    print("------------------------------------------------------------------------")
-                    print("------------------------------------------------------------------------")
+        print("check TDAT sequence:\n")
+        if(TDAT.TDATchecker.check(tdat3, self.TDAT, self.encryptionSalt, self.encryptionKey)==True): #check old one
+            self.TDAT = TDAT.TDATchecker.calcSignature(self.TDAT, self.encryptionSalt, self.encryptionKey); #calc next one
+            self.save()
+            print("------------------------------------------------------------------------")
 
-                    print("going to decrypt the cypher text with Setion AES Encryption Key of the Connection\n")
-                    iv = self.encryptionSalt
-                    encryptionKey = self.encryptionKey
+            print("------------------------------------------------------------------------")
+            print("looking for the right Key Entry in the KeyList\n")
+            if(uuid==self.accessingUUID):
+                rowKeyList = 0
+                for key in self.userKeys.all():
+                    rowKeyList = rowKeyList +1;
+                    print("compare:\n" + key.keyUUID + " (keyListElement UUID)\n"+self.accessingUUID + " (accesing UUID()\n")
+                    if re.sub('-', '',str(key.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
+                        print("found")
+                        print("------------------------------------------------------------------------")
+                        print("------------------------------------------------------------------------")
 
-                    hexArr = ( keyHash.split(" ") )
-                    hexStr = ""
-                    for i in range(0,len(hexArr)):
-                        hexArr[i] = hexArr[i].zfill(2)
-                        hexStr = hexStr + hexArr[i] + ' '
+                        print("going to decrypt the cypher text with Setion AES Encryption Key of the Connection\n")
+                        iv = self.encryptionSalt
+                        encryptionKey = self.encryptionKey
 
-                    cipherText = bytearray.fromhex(''.join(hexStr))
-                    aesCryptor = AesCryption.AES128CryptoLib()
-                    plainTxtDecrypt = aesCryptor.decrypt(bytes(cipherText),encryptionKey,iv)
+                        hexArr = ( keyHash.split(" ") )
+                        hexStr = ""
+                        for i in range(0,len(hexArr)):
+                            hexArr[i] = hexArr[i].zfill(2)
+                            hexStr = hexStr + hexArr[i] + ' '
 
-                    print("iv:\t\t" + iv)
-                    print("encryptionKey:\t" + encryptionKey)
-                    print("cipherText:\t" + str(cipherText.hex().upper()))
-                    print("plainText:\t" + str((plainTxtDecrypt.decode('ascii'))))
-                    print("UTID:\t\t" + str(key.keyUTID ))
-                    print("------------------------------------------------------------------------")
+                        cipherText = bytearray.fromhex(''.join(hexStr))
+                        aesCryptor = AesCryption.AES128CryptoLib()
+                        plainTxtDecrypt = aesCryptor.decrypt(bytes(cipherText),encryptionKey,iv)
 
-                    for door in self.listOfDoors.all():
-                        if door.doorUDID == self.accesingUDID and key.keyUTID== plainTxtDecrypt.decode('ascii'):
-                            print("------------------------------------------------------------------------")
-                            print("create doorPermission=True SHA256(AES128(TDAT+permiisionStr))\n")
-                            print("create AES128(TDAT+permissionStr)")
-                            print("TDAT:\t\t" +self.TDAT)
-                            print("permissionStr:\t" + door.permissionStr)
-                            toHashStr = (self.TDAT+door.permissionStr)
-                            print("toHashStr:\t" + toHashStr)
+                        print("iv:\t\t" + iv)
+                        print("encryptionKey:\t" + encryptionKey)
+                        print("cipherText:\t" + str(cipherText.hex().upper()))
+                        print("plainText:\t" + str((plainTxtDecrypt.decode('ascii'))))
+                        print("UTID:\t\t" + str(key.keyUTID ))
+                        print("------------------------------------------------------------------------")
 
-                            aesCryptor = AesCryption.AES128CryptoLib()
-                            cipherText = aesCryptor.encrypt(str(toHashStr),encryptionKey,iv)
-                            print("cipherText:\t" + cipherText.hex().upper())
+                        for door in self.listOfDoors.all():
+                            if door.doorUDID == self.accesingUDID and key.keyUTID== plainTxtDecrypt.decode('ascii'):
+                                print("------------------------------------------------------------------------")
+                                print("create doorPermission=True SHA256(AES128(TDAT+permiisionStr))\n")
+                                print("create AES128(TDAT+permissionStr)")
+                                print("TDAT:\t\t" +self.TDAT)
+                                print("permissionStr:\t" + door.permissionStr)
+                                toHashStr = (self.TDAT+door.permissionStr)
+                                print("toHashStr:\t" + toHashStr)
 
-                            print("\n\ncreate SHA256(AES128)")
-                            sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
-                            print("SHA256 Hash (hex):\t" + str(sha256Hash.hexdigest().upper()))
-                            print("------------------------------------------------------------------------")
-                            return sha256Hash.hexdigest().upper()
-                else:
-                    print('uuid not found')
+                                aesCryptor = AesCryption.AES128CryptoLib()
+                                cipherText = aesCryptor.encrypt(str(toHashStr),encryptionKey,iv)
+                                print("cipherText:\t" + cipherText.hex().upper())
+
+                                print("\n\ncreate SHA256(AES128)")
+                                sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
+                                print("SHA256 Hash (hex):\t" + str(sha256Hash.hexdigest().upper()))
+                                print("------------------------------------------------------------------------")
+                                return sha256Hash.hexdigest().upper()
+                    else:
+                        print('uuid not found')
         else:
             print('connection sequenz Error')
-
-        return 'fail'
+    return 'fail'
 
 
     userName     = models.CharField(max_length=255)
