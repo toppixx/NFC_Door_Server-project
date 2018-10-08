@@ -223,7 +223,7 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
         print("                ################################################")
         print("\n\n========================================================================")
         print("========================== Entering Phase 1!! ==========================")
-        print("========================================================================\n")
+        print("========================================================================")
 
         serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
         if serializer.is_valid():
@@ -281,7 +281,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
     def create(self, request, pk=None):
         print("\n\n========================================================================")
         print("========================== Entering Phase 2!! ==========================")
-        print("========================================================================\n")
+        print("========================================================================")
         print("------------------------------------------------------------------------")
 
 
@@ -313,7 +313,7 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
     def create(self, request, pk=None):
         print("\n\n========================================================================")
         print("========================== Entering Phase 3!! ==========================")
-        print("========================================================================\n")
+        print("========================================================================")
 
         serializer = serializers.NfcDooorAcContPhase3Serializer(data=request.data)
         if serializer.is_valid():
