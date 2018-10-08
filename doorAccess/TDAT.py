@@ -1,5 +1,6 @@
 import hashlib
 from django.utils.crypto import get_random_string
+from doorAccess import AesCryption
 
 # Phase 1:
 #   TDAT->init()->get_random_string(32)
