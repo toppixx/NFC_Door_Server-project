@@ -189,7 +189,6 @@ class NfcListOfUsers(models.Model):
             print("remote-hasehd: "+ ecUDID)
             if str(ecUDID) == str(sha256Hash.hexdigest()):
                 print("\n--------------------------------------------")
-
                 print("\ncalculated SHA256 Hash and recieve Hash found a mach")
                 print("\tfound UDID of the accesing Door is: \n\t"+i.doorUDID)
                 print("\n--------------------------------------------")
@@ -207,12 +206,7 @@ class NfcListOfUsers(models.Model):
                 print("\n--checking allowence of the accesing UUID--")
                 #TODO i think this is already complited in views bevor calling dacRequestP2()
                 print("searching for the key entry of the accessing UUID to get the right AES Encryption Key which one the NFC-Tag is encrypted")
-                rowKeyList = 0
                 for n in self.userKeys.all():
-                    rowKeyList = rowKeyList +1;
-                    print("\nkeyList row %d :" %(rowKeyList))
-                    print("compatre:\n" + n.keyUUID + " (keyListElement UUID)")
-                    print(self.accessingUUID + " (accesing UUID()\n")
                     if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
 
                         print("going to cypher the AES Encryption Key of the NFC-Tag")
@@ -222,15 +216,11 @@ class NfcListOfUsers(models.Model):
 
                         aesCryptor = AesCryption.AES128CryptoLib()
                         cypherText = aesCryptor.encrypt(plainText, encryptionKey, iv)
-                        #plainTxtDecrypt = aesCryptor.decrypt(cypherText,encryptionKey,iv)
 
                         print("iv:\t\t" + iv)
                         print("encryptionKey:\t" + encryptionKey)
                         print("plainTxt:\t" + plainText)
                         print("cypherText:\t" + str(cypherText))
-                        #print("For testing:")
-                        #print("decyptedText:\t" + str(plainTxtDecrypt))
-
                         return cypherText.hex() , bytes(iv,'ascii').hex()
 
         print("\ncomparing SHA256 Hashes failed!!!")
@@ -270,28 +260,10 @@ class NfcListOfUsers(models.Model):
                     print("plainText:\t" + str((plainTxtDecrypt)))
                     print("UTID:\t\t" + str(key.keyUTID ))
                     print("UTID bytes:\t"+ str(bytes(key.keyUTID,'ascii')))
-                    #print("plainTxt:\t"+str(plainTxtDecrypt.decode('ASCII' )))
                     print(bytes(bytearray.fromhex(''.join(hexStr))))
                     for door in self.listOfDoors.all():
-                        # print(door)
-                        # print("door.doorUDID == self.accesingUDID")
-                        # print(door.doorUDID == self.accesingUDID)
-                        # print("door.doorUDID:\t" + str(door.doorUDID))
-                        # print("self.accesingUDID:\t" + str(self.accesingUDID))
-
-                        # print("key.keyUTID== plainTxtDecrypt")
-                        # print(key.keyUTID== plainTxtDecrypt.decode('ascii'))
-                        # print(plainTxtDecrypt.decode('ascii'))
-                        # print(str(plainTxtDecrypt.decode('ascii')))
-                        #
-                        # print(str(key.keyUTID)== str(plainTxtDecrypt.decode('ascii')))
-                        #
-                        # print("key.keyUTID:\t" + str(key.keyUTID))
-                        # print("plainTxtDecrypt:\t" + str(plainTxtDecrypt.decode('ascii')))
-                        # print("str(bytes(key.keyUTID,'ascii'):\t" + key.keyUTID)
 
                         if door.doorUDID == self.accesingUDID and key.keyUTID== plainTxtDecrypt.decode('ascii'):
-                            # print("true")
                             print("-----start True Key Hashing-----")
                             print("self.TDAT:\t\t" +self.TDAT)
                             print("door.permissionStr:\t" + door.permissionStr)
@@ -300,37 +272,13 @@ class NfcListOfUsers(models.Model):
 
                             aesCryptor = AesCryption.AES128CryptoLib()
                             cipherText = aesCryptor.encrypt(str(toHashStr),encryptionKey,iv)
-                            # print("cipherText:\t"+str(cipherText))
-                            print("cipherText: (hex)\t"+str(cipherText.hex()))
-                            # print("cipherText: (hex).encode('ascii')\t"+str(cipherText.hex().encode('ascii')))
-
-
-                            print("\n")
-                            cipherTextPrint = cipherText.hex().upper()
-                            print("cipherText:\t" + cipherTextPrint)
+                            print("cipherText:\t" + cipherText.hex().upper())s
                             sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
-                            # print("sha256Hash")
-                            # print(sha256Hash)
+
                             print("sha256Hash.hexdigest():\t" + str(sha256Hash.digest()))
-                            # print(str(sha256Hash.hexdigest()))
 
                             return sha256Hash.hexdigest().upper()
-                            # sha256Hash = hashlib.sha256(toHashStr.encode('ascii'))
-                            # print("sha256Hash")
-                            # print(sha256Hash)
-                            # print("sha256Hash.hexdigest()")
-                            # print(str(sha256Hash.hexdigest()))
-                            #
-                            # aesCryptor = AesCryption.AES128CryptoLib()
-                            # cipherText = aesCryptor.encrypt(str(sha256Hash.hexdigest()),encryptionKey,iv)
-                            # print("cipherText:\t"+str(cipherText))
-                            # print("cipherText: (hex)\t"+str(cipherText.hex()))
 
-                            # return cipherText.hex()
-
-                    #listOfDoors->Door->UDID
-                    #if(str(n.keyUTID) == str(plainTxtDecrypt.decode('ASCII'))):
-                    #    return 'true'
 
                 else:
                     return 'uuid not found'

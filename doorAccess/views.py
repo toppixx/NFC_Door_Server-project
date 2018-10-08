@@ -217,7 +217,12 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.NfcDooorAcContPhase1Serializer
     queryset = models.NfcListOfUsers.objects.all()
     def create(self, request, pk=None):
-        print("\n\n==========================\nEntering Phase 1!!\n==========================\n")
+        print("                ################################################")
+        print("                !!!!!!!!!!!**************************!!!!!!!!!!!")
+        print("                          Door Access Process initiated")
+        print("                !!!!!!!!!!!**************************!!!!!!!!!!!")
+        print("                ################################################")
+        print("\n==========================\nEntering Phase 1!!\n==========================\n")
         serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
         if serializer.is_valid():
             userKey = request.data.get('userKeys')
@@ -232,10 +237,12 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
                     queryset2 = models.NfcListOfUsers.objects.filter(userKeys=queryset.getId())
                     if queryset2 :
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
+                        print("found a match:")
                         print("\n==========================\nPhase 1 successfully ended. \nReturning returnToken to CardReader!")
-                        print("\treturnToken:  " + queryset2.dacRequestP1(userKey))
+                        returnToken  = queryset2.dacRequestP1(userKey)
+                        print("\treturnToken:  " + returnToken)
                         print("==========================\n")
-                        return Response({'returnToken' : queryset2.dacRequestP1(userKey)})
+                        return Response({'returnToken' : returnToken})
             print("\n==========================\nPhase 1 Failed !!!")
             print("Error no falid value entered")
             print("==========================\n")
