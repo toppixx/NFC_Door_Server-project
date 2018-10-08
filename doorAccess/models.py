@@ -236,7 +236,7 @@ class NfcListOfUsers(models.Model):
                         print("checking for the right TDAT depending on old TDAT and UDID")
                         if(TDAT.TDATchecker.check(tdat2, self.TDAT, self.encryptionSalt, self.encryptionKey)==True): #check old one
                             self.TDAT = TDAT.TDATchecker.calcSignature(self.TDAT, self.encryptionSalt, self.encryptionKey); #calc next one
-
+                            self.save()
                             print("incomingTDAT and calculated nextTDAT matched. looks like the Sender is the old one")
                             print("------------------------------------------------------------------------")
                             print("------------------------------------------------------------------------")
@@ -251,8 +251,6 @@ class NfcListOfUsers(models.Model):
                                             print("found UDID!! \nUDID of the accesing Door is:\t"+door.doorUDID)
                                             print("------------------------------------------------------------------------")
                                             print("------------------------------------------------------------------------")
-                                            print(uuid)
-                                            print(door.doorUDID)
                                             self.accessingUUID = uuid
                                             self.accesingUDID = door.doorUDID
                                             self.encryptionKey = door.doorUDID
@@ -358,7 +356,7 @@ class NfcListOfUsers(models.Model):
     listOfDoors  = models.ManyToManyField(NfcDoor, related_name = 'ListOfDoors_NfcListOfUsers')
     userKeys   = models.ManyToManyField(NfcKey,  related_name = 'ListOfKeys_NfcListOfUsers')
 
-    TDAT         = models.CharField(max_length=32, default=randomString(16))#,editable=False)
+    TDAT         = models.CharField(max_length=64, default=randomString(16))#,editable=False)
     accessingUUID = models.CharField(max_length=20, default=randomString(20))
     accesingUDID = models.CharField(max_length=16, default=randomString(16))#,editable=False)
     encryptionKey= models.CharField(max_length=16, default=randomString(16))#, editable=False)    #do i need this one?
