@@ -30,7 +30,7 @@ from django.utils.crypto import get_random_string
 #
 #
 class TDATchecker():
-    def nextTDATSignature(self, sigStr, iv, encKey):
+    def calcSignature(self, sigStr, iv, encKey):
         print("------------------------------------------------------------------------")
         print("calculate next TDAT signature\n")
         print("signature String:\t" + sigStr)
@@ -51,17 +51,11 @@ class TDATchecker():
         print("------------------------------------------------------------------------")
         print("checking incommingTDAT against calculated next TDAT depending on oldTDAT")
         print("returning True or False depending on match\n")
-        print("calculate next TDAT signature\n")
-        print("signature String:\t" + oldTDAT)
-        print("\n\ncalculate AES128(signature String)\n")
-        aesCryptor = AesCryption.AES128CryptoLib()
-        cipherText = aesCryptor.encrypt(str(oldTDAT),encKey,iv)
-        print("cipherText:\t" + cipherText.hex().upper())
-        print("\n\ncalculate SHA256(AES128)\n")
-        sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
-        print("SHA256(AES128(signature String))")
-        print("signature:\t"+sha256Hash)
+
+        newTDAT = calcSignature(oldTDAT, iv, encKey)
         print("incomingTDAT:\t"+incomingTDAT)
+        print("new TDAT:\t"+newTDAT+"\n")
+
         if(incomingTDAT==sha256Hash):
             print("matched")
             print("------------------------------------------------------------------------")

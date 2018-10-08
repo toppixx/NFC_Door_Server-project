@@ -235,7 +235,7 @@ class NfcListOfUsers(models.Model):
                         print("------------------------------------------------------------------------")
                         print("checking for the right TDAT depending on old TDAT and UDID")
                         if(TDAT.TDATchecker.check(tdat2, self.TDAT, self.encryptionSalt, self.encryptionKey)==True): #check old one
-                            self.TDAT = TDAT.TDATchecker.calcTDATSignature(self.TDAT, self.encryptionSalt, self.encryptionKey); #calc next one
+                            self.TDAT = TDAT.TDATchecker.calcSignature(self.TDAT, self.encryptionSalt, self.encryptionKey); #calc next one
 
                             print("incomingTDAT and calculated nextTDAT matched. looks like the Sender is the old one")
                             print("------------------------------------------------------------------------")
@@ -375,11 +375,11 @@ class NfcDACPhase1(models.Model):
 class NfcDACPhase2(models.Model):
     userKeys = models.CharField(max_length=20)
     keyHash = models.CharField(max_length=66)
-    TDAT2 = models.CharField(max_length=32)
+    TDAT2 = models.CharField(max_length=64)
 
 class NfcDACPhase3(models.Model):
     userKeys = models.CharField(max_length=20)
     #aesEncryptedNfcPw = models.CharField(max_length=16)
     keyHash = models.CharField(max_length=95)
     #aesSalt = models.CharField(max_length=16)
-    TDAT3 = models.CharField(max_length=32)
+    TDAT3 = models.CharField(max_length=64)
