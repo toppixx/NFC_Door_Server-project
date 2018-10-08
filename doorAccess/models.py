@@ -268,7 +268,7 @@ class NfcListOfUsers(models.Model):
                                             print("cypherText:\t" + str(cypherText))
                                             print("------------------------------------------------------------------------")
 
-                                            return cypherText.hex() , bytes(iv,'ascii').hex()
+                                            return cypherText.hex() 
             else:
                 print("TDAT error")
             print("------------------------------------------------------------------------")
