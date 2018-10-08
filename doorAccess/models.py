@@ -306,9 +306,9 @@ class NfcListOfUsers(models.Model):
 
 
                             print("\n")
-                            cipherText = cipherText.hex().upper()
-                            print(cipherText)
-                            sha256Hash = hashlib.sha256(cipherText.hex().encode('ascii'))
+                            cipherTextPrint = cipherText.hex().upper()
+                            print("cipherText:\t" + cipherTextPrint)
+                            sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
                             # print("sha256Hash")
                             # print(sha256Hash)
                             print("sha256Hash.hexdigest():\t" + str(sha256Hash.digest()))
