@@ -162,35 +162,31 @@ class NfcListOfUsers(models.Model):
 
     def dacRequestP2(self, uuid, ecUDID):
         rowDoorList = 0
+        print("Phase 2:\nRecieving a SHA256 Hash from remote calculated on TDAT+UDID, to get the Right UDID and encryption Key")
+        print("going to calculate all SHA256(TDAT+UDID) Hashes of all Doors, comparing each with the recieved one")
+        print("if a match is found the NFC-AES-KEY of the accessing NFC-Tag will be send encrypted to the UDID Terminal")
         for i in self.listOfDoors.all():
             rowDoorList = rowDoorList+1
             print("row %d:" %(rowDoorList))
             ecUDID = ecUDID.lower()
-            #DEBUG
-            # toHashStr = self.TDAT+re.sub('-', '',str(i.doorUDID))
-            # print("\SERVER plain to hash: String(TDAT + UDID)")
-            # print(toHashStr)
-            # print("\nSERVER hexed to hash: String(TDAT + UDID)")
-            # print("".join("{:02x}".format(ord(c)) for c in toHashStr))
-            # encToHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID))).encode()
-            #DEBUG
+
+            print("\nRemote Sha256 Hash SHA256(String(TDAT + UDID)):")
+            print(str(ecUDID))
 
             toHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID)))
 
+            print("\nServer Sha256 Hash String(TDAT + UDID):\n"+toHashStr)
             sha256Hash = hashlib.sha256(toHashStr.encode('ASCII'))
-
-            print("\nSERVER hexed to hash: String(TDAT + UDID)")
             print("input:\t" + toHashStr)
             print("output:\t" +str(sha256Hash.hexdigest()))
-            print("\nREMOTE hexed to hash: SHA256(String(TDAT + UDID))")
-            print(str(ecUDID))
-            print("\ngoint to compare calculated and hashed SHA256 Hash")
+
+            print("\n--------------------------------------------")
+            print("\ncompare calculated and hashed SHA256 Hash")
             print("server-hashed: "+sha256Hash.hexdigest())
             print("remote-hasehd: "+ ecUDID)
             if str(ecUDID) == str(sha256Hash.hexdigest()):
-                print("\n--------------------------------------------")
-                print("\ncalculated SHA256 Hash and recieve Hash found a mach")
-                print("\tfound UDID of the accesing Door is: \n\t"+i.doorUDID)
+                print("\ncalculated SHA256 Hash and recieve Hash mached")
+                print("\tfound UDID: \nUDID of the accesing Door is:\t"+i.doorUDID)
                 print("\n--------------------------------------------")
 
                 print("\n\nsetup Data for enshuring encrypted communication")
@@ -205,26 +201,29 @@ class NfcListOfUsers(models.Model):
 
                 print("\n--checking allowence of the accesing UUID--")
                 #TODO i think this is already complited in views bevor calling dacRequestP2()
-                print("searching for the key entry of the accessing UUID to get the right AES Encryption Key which one the NFC-Tag is encrypted")
-                for n in self.userKeys.all():
-                    if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
+                for door in self.listOfDoors.all():
+                    if door.doorUDID == self.accesingUDID:
+                        print("searching for the key entry of the accessing UUID to get the right AES Encryption Key which one the NFC-Tag is encrypted")
+                        for n in self.userKeys.all():
+                            if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
 
-                        print("going to cypher the AES Encryption Key of the NFC-Tag")
-                        iv = self.encryptionSalt
-                        encryptionKey = self.encryptionKey
-                        plainText = n.AESEncryptKey
+                                print("going to cypher the AES Encryption Key of the NFC-Tag")
+                                iv = self.encryptionSalt
+                                encryptionKey = self.encryptionKey
+                                plainText = n.AESEncryptKey
 
-                        aesCryptor = AesCryption.AES128CryptoLib()
-                        cypherText = aesCryptor.encrypt(plainText, encryptionKey, iv)
+                                aesCryptor = AesCryption.AES128CryptoLib()
+                                cypherText = aesCryptor.encrypt(plainText, encryptionKey, iv)
 
-                        print("iv:\t\t" + iv)
-                        print("encryptionKey:\t" + encryptionKey)
-                        print("plainTxt:\t" + plainText)
-                        print("cypherText:\t" + str(cypherText))
-                        return cypherText.hex() , bytes(iv,'ascii').hex()
+                                print("iv:\t\t" + iv)
+                                print("encryptionKey:\t" + encryptionKey)
+                                print("plainTxt:\t" + plainText)
+                                print("cypherText:\t" + str(cypherText))
+                                return cypherText.hex() , bytes(iv,'ascii').hex()
 
-        print("\ncomparing SHA256 Hashes failed!!!")
-        return 'fail', 'fail'
+        print("accesing UUID doesnt exist or has no rights to enter to door")
+        print("\nPhase 2 failed!!!")
+        return 'fail'
 
     def dacRequestP3(self,uuid, keyHash, TDAT3):
         #TODO decrypt keyHash check Permission and return DoorHandle if true else -1
