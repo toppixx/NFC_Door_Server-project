@@ -292,6 +292,7 @@ class NfcListOfUsers(models.Model):
 
                         if door.doorUDID == self.accesingUDID and key.keyUTID== plainTxtDecrypt.decode('ascii'):
                             # print("true")
+                            print("-----start True Key Hashing-----")
                             print("self.TDAT:\t\t" +self.TDAT)
                             print("door.permissionStr:\t" + door.permissionStr)
                             toHashStr = (self.TDAT+door.permissionStr)
@@ -299,9 +300,9 @@ class NfcListOfUsers(models.Model):
 
                             aesCryptor = AesCryption.AES128CryptoLib()
                             cipherText = aesCryptor.encrypt(str(toHashStr),encryptionKey,iv)
-                            print("cipherText:\t"+str(cipherText))
+                            # print("cipherText:\t"+str(cipherText))
                             print("cipherText: (hex)\t"+str(cipherText.hex()))
-                            print("cipherText: (hex).encode('ascii')\t"+str(cipherText.hex().encode('ascii')))
+                            # print("cipherText: (hex).encode('ascii')\t"+str(cipherText.hex().encode('ascii')))
 
 
                             print("\n")
@@ -309,7 +310,7 @@ class NfcListOfUsers(models.Model):
                             sha256Hash = hashlib.sha256(cipherText.hex().encode('ascii'))
                             # print("sha256Hash")
                             # print(sha256Hash)
-                            print("sha256Hash.hexdigest():\t" + str(sha256Hash.hexdigest()))
+                            print("sha256Hash.hexdigest():\t" + str(sha256Hash.digest()))
                             # print(str(sha256Hash.hexdigest()))
 
                             return sha256Hash.hexdigest()
