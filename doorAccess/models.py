@@ -221,7 +221,7 @@ class NfcListOfUsers(models.Model):
                                         print("------------------------------------------------------------------------")
                                         print("setup Data for enshuring encrypted communication")
                                         iv = get_random_string(16)
-                                        print("generated Salt (iv) for AES-Encryption\niv:\t"+iv)
+                                        print("generated Salt (iv) for AES-Encryption\n\niv:\t"+iv)
 
                                         self.accessingUUID = uuid
                                         self.encryptionSalt = iv
@@ -307,7 +307,7 @@ class NfcListOfUsers(models.Model):
 
                             print("\n\ncreate SHA256(AES128)")
                             sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
-                            print("SHA256 Hash (hex):\t" + str(sha256Hash.digest()))
+                            print("SHA256 Hash (hex):\t" + str(sha256Hash.hexdigest().upper()))
                             print("------------------------------------------------------------------------")
                             return sha256Hash.hexdigest().upper()
                 else:
