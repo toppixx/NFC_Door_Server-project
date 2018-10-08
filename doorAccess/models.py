@@ -353,7 +353,7 @@ class NfcListOfUsers(models.Model):
                         print('uuid not found')
         else:
             print('connection sequenz Error')
-    return 'fail'
+        return 'fail'
 
 
     userName     = models.CharField(max_length=255)
