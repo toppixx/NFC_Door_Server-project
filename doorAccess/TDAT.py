@@ -42,7 +42,7 @@ class TDATchecker():
         print("\n\ncalculate SHA256(AES128)\n")
         sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
         print("return SHA256(AES128(signature String))")
-        print("signature:\t"+sha256Hash)
+        print("signature:\t"+sha256Hash.hexdigest().upper())
         print("------------------------------------------------------------------------")
         return sha256Hash
 
