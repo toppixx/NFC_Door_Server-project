@@ -247,11 +247,11 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
                         print("------------------------------------------------------------------------")
 
                         print("\n==========================\nPhase 1 successfully ended. \nReturning returnToken to CardReader!")
-                        returnToken  = queryset2.dacRequestP1(userKey)
+                        returnToken, iv  = queryset2.dacRequestP1(userKey)
                         if(returnToken != 'fail'):
                             print("\treturnToken:  " + returnToken)
                             print("==========================")
-                            return Response({'returnToken' : returnToken})
+                            return Response({'returnToken' : returnToken,'iv' : iv})
         #     print("\n==========================\nPhase 1 Failed !!!")
         #     print("Error no falid value entered")
         #     print("==========================\n\n")
@@ -301,7 +301,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                         print("\n==========================\nPhase 2 successfully ended. \nreturning return cypher and iv to CardReader!")
                         print("\ncypher:  " + cypher +"\niv:\t  " + iv)
                         print("==========================")
-                        return Response({'cypher' : cypher, 'iv' : iv})
+                        return Response({'cypher' : cypher})
 
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 

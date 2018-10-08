@@ -30,16 +30,39 @@ from django.utils.crypto import get_random_string
 #
 #
 class TDATchecker():
-    def update(self, oldTDAT, passphrase, iv):
-        toHashStr = oldTDAT+passphrase+iv
-        return hashlib.sha256(toHashStr.encode('ASCII'))
+    def nextTDATSignature(self, sigStr, iv, encKey):
+        print("------------------------------------------------------------------------")
+        print("calculate next TDAT signature\n")
+        print("signature String:\t" + sigStr)
+        print("\n\ncalculate AES128(signature String)\n")
+        aesCryptor = AesCryption.AES128CryptoLib()
+        cipherText = aesCryptor.encrypt(str(sigStr),encKey,iv)
+        print("cipherText:\t" + cipherText.hex().upper())
+        print("\n\ncalculate SHA256(AES128)\n")
+        sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
+        print("SHA256(AES128(signature String))")
+        print("signature:\t"+sha256Hash)
+        print("------------------------------------------------------------------------")
+        return sha256Hash
+
+        #toHashStr = oldTDAT+passphrase+iv
+        #return hashlib.sha256(toHashStr.encode('ASCII'))
 
 
-    def check(self,incTDAT, oldTDAT, passphrase, iv):
-
-        toHashStr = oldTDAT+passphrase+iv
-        tdat = hashlib.sha256(toHashStr.encode('ASCII'))
-        if(tdat==incTDAT):
+    def check(self, incomingTDAT, oldTDAT, iv, encKey):
+        print("------------------------------------------------------------------------")
+        print("calculate next TDAT signature\n")
+        print("signature String:\t" + oldTDAT)
+        print("\n\ncalculate AES128(signature String)\n")
+        aesCryptor = AesCryption.AES128CryptoLib()
+        cipherText = aesCryptor.encrypt(str(oldTDAT),encKey,iv)
+        print("cipherText:\t" + cipherText.hex().upper())
+        print("\n\ncalculate SHA256(AES128)\n")
+        sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
+        print("SHA256(AES128(signature String))")
+        print("signature:\t"+sha256Hash)
+        print("------------------------------------------------------------------------")
+        if(incomingTDAT==sha256Hash):
             return True
         else:
             return False

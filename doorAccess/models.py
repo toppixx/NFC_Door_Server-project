@@ -151,6 +151,22 @@ class NfcListOfUsers(models.Model):
     def getUserKeys(self):
         return self.userKeys
 
+    def calcTDATSignature(self, sigStr, iv, encKey):
+        print("------------------------------------------------------------------------")
+        print("calculate next TDAT signature\n")
+        print("signature String:\t" + sigStr)
+        print("\n\ncalculate AES128(signature String)\n")
+        aesCryptor = AesCryption.AES128CryptoLib()
+        cipherText = aesCryptor.encrypt(str(sigStr),encKey,iv)
+        print("cipherText:\t" + cipherText.hex().upper())
+        print("\n\ncalculate SHA256(AES128)\n")
+        sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
+        print("SHA256(AES128(signature String))")
+        print("signature:\t"+sha256Hash)
+        print("------------------------------------------------------------------------")
+        return sha256Hash
+
+
     def dacRequestP1(self,uuid):
         print("------------------------------------------------------------------------")
         print("looking for the right Key Entry in the KeyList")
@@ -160,11 +176,19 @@ class NfcListOfUsers(models.Model):
             if re.sub('-', '',str(i.keyUUID)) == re.sub('-', '',str(uuid)):
                 self.accessingUUID = re.sub('-', '',str(uuid))
                 self.TDAT =  TDAT.TDATchecker().init()
-            self.save()
-            print("found")
-            print("------------------------------------------------------------------------")
 
-            return str(self.TDAT)
+                print("------------------------------------------------------------------------")
+                print("setup Data for enshuring encrypted communication")
+                iv = get_random_string(16)
+                print("generated Salt (iv) for AES-Encryption\n\niv:\t"+iv)
+                self.encryptionSalt = iv
+                print("------------------------------------------------------------------------")
+
+                self.save()
+                print("found")
+                print("------------------------------------------------------------------------")
+
+                return str(self.TDAT) , str(self.encryptionSalt)
         print("no match")
         print("------------------------------------------------------------------------")
         return 'fail'
@@ -175,81 +199,80 @@ class NfcListOfUsers(models.Model):
         print("if a match is found the NFC-AES-KEY of the accessing NFC-Tag will be send encrypted to the UDID Terminal")
         print("\n------------------------------------------------------------------------\n")
         print("looking for the right Key Entry in the KeyList")
-
-        for l in self.userKeys.all():
-            if re.sub('-', '',str(l.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
-                print("found")
-                print("------------------------------------------------------------------------")
-                print("------------------------------------------------------------------------")
-                print("looking for the accessing door")
-                print("for this make a row and check all calculated SHA256 against the incoming SHA256")
-                print("------------------------------------------------------------------------")
-                for i in self.listOfDoors.all():
-                    ecUDID = ecUDID.lower()
+        if(TDAT.TDATchecker.check(incTDAT, self.TDAT, self.encryptionSalt)): #check old one
+            self.TDAT = calcTDASignature(self.TDAT); #calc next one
+            for l in self.userKeys.all():
+                if re.sub('-', '',str(l.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
+                    print("found")
                     print("------------------------------------------------------------------------")
-                    print("\nRemote Sha256 Hash SHA256(String(TDAT + UDID)):")
-                    print(str(ecUDID))
                     print("------------------------------------------------------------------------")
-
-                    toHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID)))
+                    print("looking for the accessing door")
+                    print("for this make a row and check all calculated SHA256 against the incoming SHA256")
                     print("------------------------------------------------------------------------")
-
-                    print("calculating Server Sha256 Hash String(TDAT + UDID):\nTDAT:\t"+self.TDAT+"\nUDID:\t"+i.doorUDID+"\nTDAT+UDID:\t"+toHashStr)
-                    sha256Hash = hashlib.sha256(toHashStr.encode('ASCII'))
-                    print("SHA256 Hash (hex):\t" +str(sha256Hash.hexdigest()))
-                    print("------------------------------------------------------------------------")
-
-                    print("------------------------------------------------------------------------")
-                    print("compare calculated and hashed SHA256 Hash\n")
-                    print("server-hashed: "+sha256Hash.hexdigest())
-                    print("remote-hasehd: "+ ecUDID)
-                    print("------------------------------------------------------------------------")
-
-                    if str(ecUDID) == str(sha256Hash.hexdigest()):
-                        print("ncalculated SHA256 Hash and recieve Hash mached")
+                    for i in self.listOfDoors.all():
+                        ecUDID = ecUDID.lower()
                         print("------------------------------------------------------------------------")
+                        print("\nRemote Sha256 Hash SHA256(String(TDAT + UDID)):")
+                        print(str(ecUDID))
                         print("------------------------------------------------------------------------")
-                        print("checking allowence of the accesing UUID")
+
+                        toHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID)))
                         print("------------------------------------------------------------------------")
-                        for door in self.listOfDoors.all():
-                            if door.doorUDID == self.accesingUDID:
-                                print("------------------------------------------------------------------------")
-                                print("searching for the key entry of the accessing UUID to get the right AES Encryption Key which one the NFC-Tag is encrypted\n")
-                                for n in self.userKeys.all():
-                                    if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
-                                        print("found UDID!! \nUDID of the accesing Door is:\t"+i.doorUDID)
-                                        print("------------------------------------------------------------------------")
-                                        print("------------------------------------------------------------------------")
-                                        print("setup Data for enshuring encrypted communication")
-                                        iv = get_random_string(16)
-                                        print("generated Salt (iv) for AES-Encryption\n\niv:\t"+iv)
 
-                                        self.accessingUUID = uuid
-                                        self.encryptionSalt = iv
-                                        self.accesingUDID = i.doorUDID
-                                        self.encryptionKey = i.doorUDID
-                                        self.save()
-                                        print("\nstoring Data of the Accesing UUID and UDID for next actions")
-                                        print("------------------------------------------------------------------------")
+                        print("calculating Server Sha256 Hash String(TDAT + UDID):\nTDAT:\t"+self.TDAT+"\nUDID:\t"+i.doorUDID+"\nTDAT+UDID:\t"+toHashStr)
+                        sha256Hash = hashlib.sha256(toHashStr.encode('ASCII'))
+                        print("SHA256 Hash (hex):\t" +str(sha256Hash.hexdigest()))
+                        print("------------------------------------------------------------------------")
 
-                                        print("------------------------------------------------------------------------")
-                                        print("cypher the NFC-AES-Key of the NFC-Tag\n")
-                                        iv = self.encryptionSalt
-                                        encryptionKey = self.encryptionKey
-                                        plainText = n.AESEncryptKey
+                        print("------------------------------------------------------------------------")
+                        print("compare calculated and hashed SHA256 Hash\n")
+                        print("server-hashed: "+sha256Hash.hexdigest())
+                        print("remote-hasehd: "+ ecUDID)
+                        print("------------------------------------------------------------------------")
 
-                                        aesCryptor = AesCryption.AES128CryptoLib()
-                                        cypherText = aesCryptor.encrypt(plainText, encryptionKey, iv)
+                        if str(ecUDID) == str(sha256Hash.hexdigest()):
+                            print("------------------------------------------------------------------------")
+                            print("calculated SHA256 Hash and recieve Hash mached")
+                            print("------------------------------------------------------------------------")
+                            print("------------------------------------------------------------------------")
+                            print("checking allowence of the accesing UUID")
+                            print("------------------------------------------------------------------------")
+                            for door in self.listOfDoors.all():
+                                if door.doorUDID == self.accesingUDID:
+                                    print("------------------------------------------------------------------------")
+                                    print("searching for the key entry of the accessing UUID to get the right AES Encryption Key which one the NFC-Tag is encrypted\n")
+                                    for n in self.userKeys.all():
+                                        if re.sub('-', '',str(n.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
+                                            print("found UDID!! \nUDID of the accesing Door is:\t"+i.doorUDID)
+                                            print("------------------------------------------------------------------------")
+                                            print("------------------------------------------------------------------------")
+                                            self.accessingUUID = uuid
+                                            self.accesingUDID = i.doorUDID
+                                            self.encryptionKey = i.doorUDID
+                                            self.save()
+                                            print("\nstoring Data of the Accesing UUID and UDID for next actions")
+                                            print("------------------------------------------------------------------------")
 
-                                        print("iv:\t\t" + iv)
-                                        print("encryptionKey:\t" + encryptionKey)
-                                        print("plainTxt:\t" + plainText)
-                                        print("cypherText:\t" + str(cypherText))
-                                        print("------------------------------------------------------------------------")
+                                            print("------------------------------------------------------------------------")
+                                            print("cypher the NFC-AES-Key of the NFC-Tag\n")
+                                            iv = self.encryptionSalt
+                                            encryptionKey = self.encryptionKey
+                                            plainText = n.AESEncryptKey
 
-                                        return cypherText.hex() , bytes(iv,'ascii').hex()
-        print("------------------------------------------------------------------------")
-        print("accesing UUID doesnt exist or has no rights to enter to door")
+                                            aesCryptor = AesCryption.AES128CryptoLib()
+                                            cypherText = aesCryptor.encrypt(plainText, encryptionKey, iv)
+
+                                            print("iv:\t\t" + iv)
+                                            print("encryptionKey:\t" + encryptionKey)
+                                            print("plainTxt:\t" + plainText)
+                                            print("cypherText:\t" + str(cypherText))
+                                            print("------------------------------------------------------------------------")
+
+                                            return cypherText.hex() , bytes(iv,'ascii').hex()
+            else:
+                print("TDAT error")
+            print("------------------------------------------------------------------------")
+            print("accesing UUID doesnt exist or has no rights to enter to door")
         print("\nPhase 2 failed!!!")
         return 'fail'
 
@@ -321,8 +344,6 @@ class NfcListOfUsers(models.Model):
         return 'fail'
 
 
-    #def nextStep
-    #return SHA256(AES128(TDAT,encKey,iv))
     userName     = models.CharField(max_length=255)
 
     listOfDoorGroups = models.ManyToManyField(NfcDoorGroup, related_name='DoorGroup_NfcListOfUsers')
