@@ -299,7 +299,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
                         cypher, iv = queryset2.dacRequestP2(userKey,udid)
                         print("\n==========================\nPhase 2 successfully ended. \nreturning return cypher and iv to CardReader!")
-                        print("\ncypher:  " + cypher +"\n\t:  " + iv)
+                        print("\ncypher:  " + cypher +"\niv:\t  " + iv)
                         print("==========================")
                         return Response({'cypher' : cypher, 'iv' : iv})
 
@@ -316,7 +316,6 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
         print("========================================================================\n")
 
         serializer = serializers.NfcDooorAcContPhase3Serializer(data=request.data)
-        print(serializer)
         if serializer.is_valid():
             userKeys = request.data.get('userKeys')
             keyHash = request.data.get('keyHash')
