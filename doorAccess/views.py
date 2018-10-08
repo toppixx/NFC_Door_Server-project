@@ -324,7 +324,7 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
             keyHash = request.data.get('keyHash')
             tdat3 = request.data.get('TDAT3')
             #if userKeys is not None and aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None :
-            if userKeys is not None and keyHash is not None and TDAT3 is not None :
+            if userKeys is not None and keyHash is not None and tdat3 is not None :
                 queryset = models.NfcKey.objects.filter(keyUUID=userKeys)
                 if queryset :
                     queryset = models.NfcKey.objects.get(keyUUID=userKeys)
