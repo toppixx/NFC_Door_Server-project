@@ -362,7 +362,7 @@ class NfcListOfUsers(models.Model):
     listOfDoors  = models.ManyToManyField(NfcDoor, related_name = 'ListOfDoors_NfcListOfUsers')
     userKeys   = models.ManyToManyField(NfcKey,  related_name = 'ListOfKeys_NfcListOfUsers')
 
-    TDAT         = models.CharField(max_length=64, default=randomString(16))#,editable=False)
+    TDAT         = models.CharField(max_length=64, default=randomString(64))#,editable=False)
     accessingUUID = models.CharField(max_length=20, default=randomString(20))
     accesingUDID = models.CharField(max_length=16, default=randomString(16))#,editable=False)
     encryptionKey= models.CharField(max_length=16, default=randomString(16))#, editable=False)    #do i need this one?

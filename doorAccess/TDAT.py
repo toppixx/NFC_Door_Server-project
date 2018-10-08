@@ -67,4 +67,4 @@ class TDATchecker():
             return False
 
     def init(self):
-         return get_random_string(32)
+         return get_random_string(64)
