@@ -261,17 +261,16 @@ class NfcListOfUsers(models.Model):
         print("TDAT3:\t\t%s" %(TDAT3))
         print("------------------------------------------------------------------------")
         print("------------------------------------------------------------------------")
-        print("looking for the right Key Entry in the KeyList")
+        print("looking for the right Key Entry in the KeyList\n")
         if(uuid==self.accessingUUID):
             rowKeyList = 0
             for key in self.userKeys.all():
                 rowKeyList = rowKeyList +1;
-                print("compatre:\n" + key.keyUUID + " (keyListElement UUID)\n"+self.accessingUUID + " (accesing UUID()\n")
+                print("compare:\n" + key.keyUUID + " (keyListElement UUID)\n"+self.accessingUUID + " (accesing UUID()\n")
                 if re.sub('-', '',str(key.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
                     print("found")
                     print("------------------------------------------------------------------------")
-
-                    print("going to decrypt the cypher text with Setion AES Encryption Key of the Connection")
+                    print("going to decrypt the cypher text with Setion AES Encryption Key of the Connection\n")
                     iv = self.encryptionSalt
                     encryptionKey = self.encryptionKey
 
@@ -290,9 +289,12 @@ class NfcListOfUsers(models.Model):
                     print("cipherText:\t" + str(cipherText))
                     print("plainText:\t" + str((plainTxtDecrypt)))
                     print("UTID:\t\t" + str(key.keyUTID ))
+                    print("------------------------------------------------------------------------")
+
                     for door in self.listOfDoors.all():
                         if door.doorUDID == self.accesingUDID and key.keyUTID== plainTxtDecrypt.decode('ascii'):
-                            print("\ncreate doorPermission=True SHA256(AES128(TDAT+permiisionStr))")
+                            print("------------------------------------------------------------------------")
+                            print("\ncreate doorPermission=True SHA256(AES128(TDAT+permiisionStr))\n")
                             print("TDAT:\t\t" +self.TDAT)
                             print("permissionStr:\t" + door.permissionStr)
                             toHashStr = (self.TDAT+door.permissionStr)
@@ -304,7 +306,7 @@ class NfcListOfUsers(models.Model):
 
                             sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
                             print("SHA256 Hash:\t" + str(sha256Hash.digest()))
-
+                            print("------------------------------------------------------------------------")
                             return sha256Hash.hexdigest().upper()
                 else:
                     print('uuid not found')
