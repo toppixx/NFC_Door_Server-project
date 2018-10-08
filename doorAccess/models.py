@@ -252,8 +252,8 @@ class NfcListOfUsers(models.Model):
                                             print("------------------------------------------------------------------------")
                                             print("------------------------------------------------------------------------")
                                             self.accessingUUID = uuid
-                                            self.accesingUDID = i.doorUDID
-                                            self.encryptionKey = i.doorUDID
+                                            self.accesingUDID = door.doorUDID
+                                            self.encryptionKey = door.doorUDID
                                             self.save()
                                             print("\nstoring Data of the Accesing UUID and UDID for next actions")
                                             print("------------------------------------------------------------------------")
