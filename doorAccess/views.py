@@ -250,6 +250,8 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
                         returnToken, iv  = queryset2.dacRequestP1(userKey)
                         if(returnToken != 'fail'):
                             print("\treturnToken:  " + returnToken)
+                            print("\tiv:  " + iv)
+
                             print("==========================")
                             return Response({'returnToken' : returnToken,'iv' : iv})
         #     print("\n==========================\nPhase 1 Failed !!!")
@@ -297,9 +299,9 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                     queryset2 = models.NfcListOfUsers.objects.filter(userKeys=queryset.getId())
                     if queryset2:
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
-                        cypher, iv = queryset2.dacRequestP2(userKey,udid)
+                        cypher = queryset2.dacRequestP2(userKey,udid)
                         print("\n==========================\nPhase 2 successfully ended. \nreturning return cypher and iv to CardReader!")
-                        print("\ncypher:  " + cypher +"\niv:\t  " + iv)
+                        print("\ncypher:  " + cypher)
                         print("==========================")
                         return Response({'cypher' : cypher})
 
