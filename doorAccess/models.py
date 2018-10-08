@@ -188,7 +188,7 @@ class NfcListOfUsers(models.Model):
                 print("found")
                 print("------------------------------------------------------------------------")
 
-                return str(self.TDAT) , str(self.encryptionSalt)
+                return str(self.TDAT) , bytes(self.encryptionSalt,'ascii').hex()
         print("no match")
         print("------------------------------------------------------------------------")
         return 'fail'
@@ -268,7 +268,7 @@ class NfcListOfUsers(models.Model):
                                             print("cypherText:\t" + str(cypherText))
                                             print("------------------------------------------------------------------------")
 
-                                            return cypherText.hex() 
+                                            return cypherText.hex()
             else:
                 print("TDAT error")
             print("------------------------------------------------------------------------")
