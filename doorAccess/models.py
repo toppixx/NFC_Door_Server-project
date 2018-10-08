@@ -258,23 +258,20 @@ class NfcListOfUsers(models.Model):
                     print("cipherText:\t" + str(cipherText))
                     print("plainText:\t" + str((plainTxtDecrypt)))
                     print("UTID:\t\t" + str(key.keyUTID ))
-                    print("UTID bytes:\t"+ str(bytes(key.keyUTID,'ascii')))
-                    print(bytes(bytearray.fromhex(''.join(hexStr))))
                     for door in self.listOfDoors.all():
-
                         if door.doorUDID == self.accesingUDID and key.keyUTID== plainTxtDecrypt.decode('ascii'):
-                            print("-----start True Key Hashing-----")
-                            print("self.TDAT:\t\t" +self.TDAT)
-                            print("door.permissionStr:\t" + door.permissionStr)
+                            print("\ncreate doorPermission=True SHA256(AES128(TDAT+permiisionStr))")
+                            print("TDAT:\t\t" +self.TDAT)
+                            print("permissionStr:\t" + door.permissionStr)
                             toHashStr = (self.TDAT+door.permissionStr)
                             print("toHashStr:\t" + toHashStr)
 
                             aesCryptor = AesCryption.AES128CryptoLib()
                             cipherText = aesCryptor.encrypt(str(toHashStr),encryptionKey,iv)
                             print("cipherText:\t" + cipherText.hex().upper())
-                            sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
 
-                            print("sha256Hash.hexdigest():\t" + str(sha256Hash.digest()))
+                            sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
+                            print("SHA256 Hash:\t" + str(sha256Hash.digest()))
 
                             return sha256Hash.hexdigest().upper()
                 else:

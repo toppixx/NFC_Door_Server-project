@@ -221,7 +221,10 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
         print("                          Door Access Process initiated")
         print("                !!!!!!!!!!!**************************!!!!!!!!!!!")
         print("                ################################################")
-        print("\n========================== Entering Phase 1!! ==========================\n")
+        print("\n\n========================================================================")
+        print("========================== Entering Phase 1!! ==========================\n")
+        print("========================================================================")
+
         serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
         if serializer.is_valid():
             userKey = request.data.get('userKeys')
@@ -240,7 +243,7 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
                         print("\n==========================\nPhase 1 successfully ended. \nReturning returnToken to CardReader!")
                         returnToken  = queryset2.dacRequestP1(userKey)
                         print("\treturnToken:  " + returnToken)
-                        print("==========================\n\n")
+                        print("==========================")
                         return Response({'returnToken' : returnToken})
         #     print("\n==========================\nPhase 1 Failed !!!")
         #     print("Error no falid value entered")
@@ -265,7 +268,10 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.NfcDooorAcContPhase2Serializer
     queryset = models.NfcListOfUsers.objects.filter(TDAT='asdfalsjfljeroiqtoiJLKDJFLKJSALKFL')
     def create(self, request, pk=None):
-        print("\n\n========================== Entering Phase 2!! ==========================\n")
+        print("========================================================================")
+        print("========================== Entering Phase 2!! ==========================\n")
+        print("========================================================================")
+
         serializer = serializers.NfcDooorAcContPhase2Serializer(data=request.data)
         if serializer.is_valid():
             userKey = request.data.get('userKeys')
@@ -281,7 +287,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                         cypher, iv = queryset2.dacRequestP2(userKey,udid)
                         print("\n==========================\nPhase 2 successfully ended. \nreturning return cypher and iv to CardReader!")
                         print("\tcypher:  " + cypher +"\n\tiv:  " + iv)
-                        print("==========================\n\n")
+                        print("==========================")
                         return Response({'cypher' : cypher, 'iv' : iv})
 
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
@@ -292,7 +298,9 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
     queryset = models.NfcListOfUsers.objects.filter(TDAT='asdfalsjfljeroiqtoiJLKDJFLKJSALKFL')
 
     def create(self, request, pk=None):
-        print("\n\n========================== Entering Phase 3!! ==========================\n")
+        print("\n\n========================================================================")
+        print("========================== Entering Phase 3!! ==========================\n")
+        print("========================================================================")
 
         serializer = serializers.NfcDooorAcContPhase3Serializer(data=request.data)
         print(serializer)
