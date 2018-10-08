@@ -278,12 +278,10 @@ class NfcListOfUsers(models.Model):
                             print("sha256Hash.hexdigest():\t" + str(sha256Hash.digest()))
 
                             return sha256Hash.hexdigest().upper()
-
-
                 else:
-                    return 'uuid not found'
+                    print('uuid not found')
         else:
-            return 'not the same uuid connection sequenz Error'
+            print('not the same uuid connection sequenz Error')
 
         return 'fail'
 

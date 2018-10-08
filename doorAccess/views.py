@@ -208,8 +208,7 @@ class DoorAccesControllViewSet(viewsets.ModelViewSet):
 
         else:
             print('serializer not valid')
-            return Response(serializer.errors,
-            status = status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 
 class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
@@ -222,7 +221,7 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
         print("                          Door Access Process initiated")
         print("                !!!!!!!!!!!**************************!!!!!!!!!!!")
         print("                ################################################")
-        print("\n==========================\nEntering Phase 1!!\n==========================\n")
+        print("\n========================== Entering Phase 1!! ==========================\n")
         serializer = serializers.NfcDooorAcContPhase1Serializer(data=request.data)
         if serializer.is_valid():
             userKey = request.data.get('userKeys')
@@ -252,21 +251,21 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
             print("\n==========================\nPhase 1 Error 404 !!!")
             print("404 Error")
             print("==========================\n")
-            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
-    def list(self, request):
-        """ Return a True or False if nfc_tag is authenticated for that door. """
-        a_viewset = [
-        'enter your Key',
-        ]
-        return Response({'message':'Hello', 'a_viewset': a_viewset})
+    # def list(self, request):
+    #     """ Return a True or False if nfc_tag is authenticated for that door. """
+    #     a_viewset = [
+    #     'enter your Key',
+    #     ]
+    #     return Response({'message':'Hello', 'a_viewset': a_viewset})
 
 class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
     """initiates Phase 2 of the Acces Controll"""
     serializer_class = serializers.NfcDooorAcContPhase2Serializer
     queryset = models.NfcListOfUsers.objects.filter(TDAT='asdfalsjfljeroiqtoiJLKDJFLKJSALKFL')
     def create(self, request, pk=None):
-        print("\n\n==========================\nEntering Phase 2!!\n==========================\n")
+        print("\n\n========================== Entering Phase 2!! ==========================\n")
         serializer = serializers.NfcDooorAcContPhase2Serializer(data=request.data)
         if serializer.is_valid():
             userKey = request.data.get('userKeys')
@@ -282,13 +281,10 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                         cypher, iv = queryset2.dacRequestP2(userKey,udid)
                         print("\n==========================\nPhase 2 successfully ended. \nreturning return cypher and iv to CardReader!")
                         print("\tcypher:  " + cypher +"\n\tiv:  " + iv)
-                        print("==========================\n")
+                        print("==========================")
                         return Response({'cypher' : cypher, 'iv' : iv})
 
-            return Response({'Error no falid value entered'})
-
-        else:
-            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
     """initiates Phase 3 of the Acces Controll"""
@@ -296,6 +292,8 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
     queryset = models.NfcListOfUsers.objects.filter(TDAT='asdfalsjfljeroiqtoiJLKDJFLKJSALKFL')
 
     def create(self, request, pk=None):
+        print("\n\n========================== Entering Phase 3!! ==========================\n")
+
         serializer = serializers.NfcDooorAcContPhase3Serializer(data=request.data)
         print(serializer)
         if serializer.is_valid():
@@ -314,6 +312,15 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
                         if queryset:
                             doorHandleHash = queryset2.dacRequestP3(userKeys,keyHash,TDAT3)
-                            return Response({'accessToken' : doorHandleHash})
+                            if doorHandleHash != 'fail':
+                                print("\n==========================\nPhase 3 successfully ended. \nreturning doorAccessToken!")
+                                print("doorPermissionHash:  " + doorHandleHash)
+                                print("==========================")
+                                return Response({'accessToken' : doorHandleHash})
 
-        return Response({'Error no falid value entered'})
+                            else:
+                                print("\n==========================\nPhase 3 ended.with fail \nreturning doorAccessToken!")
+                                print("doorPermissionHash:  " + doorHandleHash)
+                                print("==========================")
+
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
