@@ -193,46 +193,51 @@ class NfcListOfUsers(models.Model):
         print("------------------------------------------------------------------------")
         return 'fail'
 
-    def dacRequestP2(self, uuid, ecUDID):
+    def dacRequestP2(self, uuid, ecUDID, tdat2):
         print("Phase 2:\nRecieving a SHA256 Hash from remote calculated on TDAT+UDID, to get the Right UDID and encryption Key")
         print("going to calculate all SHA256(TDAT+UDID) Hashes of all Doors, comparing each with the recieved one")
         print("if a match is found the NFC-AES-KEY of the accessing NFC-Tag will be send encrypted to the UDID Terminal")
         print("\n------------------------------------------------------------------------\n")
         print("looking for the right Key Entry in the KeyList")
-        if(True): #check old one
-            #self.TDAT = calcTDASignature(self.TDAT); #calc next one
-            for l in self.userKeys.all():
-                if re.sub('-', '',str(l.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
-                    print("found")
+        for l in self.userKeys.all():
+            if re.sub('-', '',str(l.keyUUID)) == re.sub('-', '',str(self.accessingUUID)):
+                print("found")
+                print("------------------------------------------------------------------------")
+                print("------------------------------------------------------------------------")
+                print("looking for the accessing door")
+                print("for this make a row and check all calculated SHA256 against the incoming SHA256")
+                print("------------------------------------------------------------------------")
+                for i in self.listOfDoors.all():
+                    ecUDID = ecUDID.lower()
                     print("------------------------------------------------------------------------")
+                    print("\nRemote Sha256 Hash SHA256(String(TDAT + UDID)):")
+                    print(str(ecUDID))
                     print("------------------------------------------------------------------------")
-                    print("looking for the accessing door")
-                    print("for this make a row and check all calculated SHA256 against the incoming SHA256")
+
+                    toHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID)))
                     print("------------------------------------------------------------------------")
-                    for i in self.listOfDoors.all():
-                        ecUDID = ecUDID.lower()
-                        print("------------------------------------------------------------------------")
-                        print("\nRemote Sha256 Hash SHA256(String(TDAT + UDID)):")
-                        print(str(ecUDID))
-                        print("------------------------------------------------------------------------")
 
-                        toHashStr = (self.TDAT+re.sub('-', '',str(i.doorUDID)))
-                        print("------------------------------------------------------------------------")
+                    print("calculating Server Sha256 Hash String(TDAT + UDID):\nTDAT:\t\t\t"+self.TDAT+"\nUDID:\t\t\t"+i.doorUDID+"\nTDAT+UDID:\t\t"+toHashStr)
+                    sha256Hash = hashlib.sha256(toHashStr.encode('ASCII'))
+                    print("SHA256 Hash (hex):\t" +str(sha256Hash.hexdigest()))
+                    print("------------------------------------------------------------------------")
 
-                        print("calculating Server Sha256 Hash String(TDAT + UDID):\nTDAT:\t"+self.TDAT+"\nUDID:\t"+i.doorUDID+"\nTDAT+UDID:\t"+toHashStr)
-                        sha256Hash = hashlib.sha256(toHashStr.encode('ASCII'))
-                        print("SHA256 Hash (hex):\t" +str(sha256Hash.hexdigest()))
-                        print("------------------------------------------------------------------------")
+                    print("------------------------------------------------------------------------")
+                    print("compare calculated and hashed SHA256 Hash\n")
+                    print("server-hashed: "+sha256Hash.hexdigest())
+                    print("remote-hasehd: "+ ecUDID)
+                    print("------------------------------------------------------------------------")
 
+                    if str(ecUDID) == str(sha256Hash.hexdigest()):
                         print("------------------------------------------------------------------------")
-                        print("compare calculated and hashed SHA256 Hash\n")
-                        print("server-hashed: "+sha256Hash.hexdigest())
-                        print("remote-hasehd: "+ ecUDID)
+                        print("calculated SHA256 Hash and recieve Hash mached")
                         print("------------------------------------------------------------------------")
+                        print("------------------------------------------------------------------------")
+                        print("checking for the right TDAT depending on old TDAT and UDID")
+                        if(TDAT.TDATchecker.check(tdat2, self.TDAT, self.encryptionSalt, self.encryptionKey)==True): #check old one
+                            self.TDAT = TDAT.TDATchecker.calcTDATSignature(self.TDAT, self.encryptionSalt, self.encryptionKey); #calc next one
 
-                        if str(ecUDID) == str(sha256Hash.hexdigest()):
-                            print("------------------------------------------------------------------------")
-                            print("calculated SHA256 Hash and recieve Hash mached")
+                            print("incomingTDAT and calculated nextTDAT matched. looks like the Sender is the old one")
                             print("------------------------------------------------------------------------")
                             print("------------------------------------------------------------------------")
                             print("checking allowence of the accesing UUID")
@@ -265,24 +270,25 @@ class NfcListOfUsers(models.Model):
                                             print("iv:\t\t" + iv)
                                             print("encryptionKey:\t" + encryptionKey)
                                             print("plainTxt:\t" + plainText)
-                                            print("cypherText:\t" + str(cypherText))
+                                            print("cypherText:\t" + str(cypherText.hex().upper()))
                                             print("------------------------------------------------------------------------")
 
                                             return cypherText.hex()
-            else:
-                print("TDAT error")
+                        else:
+                            print("incomingTDAT and calculated nextTDAT missed.")
+                            print("maybe there is a man in the middle atack")
             print("------------------------------------------------------------------------")
             print("accesing UUID doesnt exist or has no rights to enter to door")
         print("\nPhase 2 failed!!!")
         return 'fail'
 
-    def dacRequestP3(self,uuid, keyHash, TDAT3):
+    def dacRequestP3(self,uuid, keyHash, tdat3 ):
         #TODO short description
         print("------------------------------------------------------------------------")
         print("request with:")
         print("uuid:\t\t%s" %(uuid))
         print("keyHash:\t%s" %(keyHash))
-        print("TDAT3:\t\t%s" %(TDAT3))
+        print("TDAT3:\t\t%s" %(tdat3))
         print("------------------------------------------------------------------------")
         print("------------------------------------------------------------------------")
         print("looking for the right Key Entry in the KeyList\n")

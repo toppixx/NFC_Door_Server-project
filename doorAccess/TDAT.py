@@ -40,17 +40,17 @@ class TDATchecker():
         print("cipherText:\t" + cipherText.hex().upper())
         print("\n\ncalculate SHA256(AES128)\n")
         sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
-        print("SHA256(AES128(signature String))")
+        print("return SHA256(AES128(signature String))")
         print("signature:\t"+sha256Hash)
         print("------------------------------------------------------------------------")
         return sha256Hash
 
-        #toHashStr = oldTDAT+passphrase+iv
-        #return hashlib.sha256(toHashStr.encode('ASCII'))
 
 
     def check(self, incomingTDAT, oldTDAT, iv, encKey):
         print("------------------------------------------------------------------------")
+        print("checking incommingTDAT against calculated next TDAT depending on oldTDAT")
+        print("returning True or False depending on match\n")
         print("calculate next TDAT signature\n")
         print("signature String:\t" + oldTDAT)
         print("\n\ncalculate AES128(signature String)\n")
@@ -61,10 +61,14 @@ class TDATchecker():
         sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
         print("SHA256(AES128(signature String))")
         print("signature:\t"+sha256Hash)
-        print("------------------------------------------------------------------------")
+        print("incomingTDAT:\t"+incomingTDAT)
         if(incomingTDAT==sha256Hash):
+            print("matched")
+            print("------------------------------------------------------------------------")
             return True
         else:
+            print("failed")
+            print("------------------------------------------------------------------------")
             return False
 
     def init(self):

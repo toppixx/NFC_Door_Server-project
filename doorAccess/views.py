@@ -291,6 +291,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             userKey = request.data.get('userKeys')
             udid = request.data.get('keyHash')
+            tdat2 = request.data.get('TDAT2')
             if userKey is not None and udid is not None:
                 #hash = hashlib.sha256(models.NfcListOfUsers.objects.filter(userKeys=uuid))
                 queryset = models.NfcKey.objects.filter(keyUUID=userKey)
@@ -299,7 +300,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                     queryset2 = models.NfcListOfUsers.objects.filter(userKeys=queryset.getId())
                     if queryset2:
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
-                        cypher = queryset2.dacRequestP2(userKey,udid)
+                        cypher = queryset2.dacRequestP2(userKey, udid, tdat2)
                         print("\n==========================\nPhase 2 successfully ended. \nreturning return cypher and iv to CardReader!")
                         print("\ncypher:  " + cypher)
                         print("==========================")
@@ -321,9 +322,7 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             userKeys = request.data.get('userKeys')
             keyHash = request.data.get('keyHash')
-            #aesEncryptedNfcPW = request.data.get('aesEncryptedNfcPw')
-            #aesSalt = request.data.get('aesSalt')
-            TDAT3 = request.data.get('TDAT3')
+            tdat3 = request.data.get('TDAT3')
             #if userKeys is not None and aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None :
             if userKeys is not None and keyHash is not None and TDAT3 is not None :
                 queryset = models.NfcKey.objects.filter(keyUUID=userKeys)
@@ -333,7 +332,7 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
                     if queryset2:
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
                         if queryset:
-                            doorHandleHash = queryset2.dacRequestP3(userKeys,keyHash,TDAT3)
+                            doorHandleHash = queryset2.dacRequestP3(userKeys,keyHash,tdat3)
                             if doorHandleHash != 'fail':
                                 print("\n==========================\nPhase 3 successfully ended. \nreturning doorAccessToken!")
                                 print("doorPermissionHash:  " + doorHandleHash)
