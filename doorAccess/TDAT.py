@@ -33,16 +33,18 @@ from doorAccess import AesCryption
 class TDATchecker():
     def calcSignature(sigStr, iv, encKey):
         print("------------------------------------------------------------------------")
-        print("calculate next TDAT signature\n")
-        print("signature String:\t" + sigStr)
-        print("\n\ncalculate AES128(signature String)\n")
+        print("calculate next TDAT signature")
+        print("incoming signature String:\n" + sigStr)
+        print("calculate AES128(signature String)")
         aesCryptor = AesCryption.AES128CryptoLib()
         cipherText = aesCryptor.encrypt(str(sigStr),encKey,iv)
-        print("cipherText:\t" + cipherText.hex().upper())
-        print("\n\ncalculate SHA256(AES128)\n")
+        print("cipherText:\n" + cipherText.hex().upper())
+        print("\ncalculate SHA256(AES128)")
         sha256Hash = hashlib.sha256(cipherText.hex().upper().encode('ascii'))
-        print("return SHA256(AES128(signature String))")
         print("signature:\t"+sha256Hash.hexdigest().upper())
+        print("return:\t")
+        print(sha256Hash.hexdigest().upper())
+
         print("------------------------------------------------------------------------")
         return sha256Hash.hexdigest().upper()
 
