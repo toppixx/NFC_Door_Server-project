@@ -326,13 +326,20 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
             #if userKeys is not None and aesEncryptedNfcPW is not None and aesSalt is not None and TDAT3 is not None :
             if userKeys is not None and keyHash is not None and tdat3 is not None :
                 queryset = models.NfcKey.objects.filter(keyUUID=userKeys)
+                print("1")
                 if queryset :
                     queryset = models.NfcKey.objects.get(keyUUID=userKeys)
                     queryset2 = models.NfcListOfUsers.objects.filter(userKeys=queryset.getId())
+                    print("2")
+
                     if queryset2:
                         queryset2 = models.NfcListOfUsers.objects.get(userKeys=queryset.getId())
+                        print("3")
+
                         if queryset:
                             doorHandleHash = queryset2.dacRequestP3(userKeys,keyHash,tdat3)
+                            print("4")
+
                             if doorHandleHash != 'fail':
                                 print("\n==========================\nPhase 3 successfully ended. \nreturning doorAccessToken!")
                                 print("doorPermissionHash:  " + doorHandleHash)
@@ -343,5 +350,5 @@ class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
                                 print("\n==========================\nPhase 3 ended.with fail \nreturning doorAccessToken!")
                                 print("doorPermissionHash:  " + doorHandleHash)
                                 print("==========================")
-
+            return Response("fail")
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
