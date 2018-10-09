@@ -380,12 +380,12 @@ class NfcDACPhase1(models.Model):
 #recivese SHA256(Nfc-Tag-UUID + TDAT) and sends AES128(UDID)(AESEncryptionKey(NFC-TAG))
 class NfcDACPhase2(models.Model):
     userKeys = models.CharField(max_length=20)
-    keyHash = models.CharField(max_length=66)
+    keyHash = models.CharField(max_length=64)
     TDAT2 = models.CharField(max_length=64)
 
 class NfcDACPhase3(models.Model):
     userKeys = models.CharField(max_length=20)
     #aesEncryptedNfcPw = models.CharField(max_length=16)
-    keyHash = models.CharField(max_length=95)
+    keyHash = models.CharField(max_length=64)
     #aesSalt = models.CharField(max_length=16)
     TDAT3 = models.CharField(max_length=64)
