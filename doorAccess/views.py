@@ -264,9 +264,9 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
             print("NO match was found")
             print("------------------------------------------------------------------------")
 
-            print("\n==========================\nPhase 1 Error 404 !!!")
-            print("404 Error")
-            print("==========================\n\n")
+            # print("\n==========================\nPhase 1 Error 404 !!!")
+            # print("404 Error")
+            # print("==========================\n\n")
         return Response("fail")
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
