@@ -267,6 +267,7 @@ class  NfcDooorAcContPhase1ViewSet(viewsets.ModelViewSet):
             print("\n==========================\nPhase 1 Error 404 !!!")
             print("404 Error")
             print("==========================\n\n")
+        return Response("fail")
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
     # def list(self, request):
@@ -305,7 +306,7 @@ class  NfcDooorAcContPhase2ViewSet(viewsets.ModelViewSet):
                         print("\ncypher:  " + cypher)
                         print("==========================")
                         return Response({'cypher' : cypher})
-
+        return Response("fail")
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 class  NfcDooorAcContPhase3ViewSet(viewsets.ModelViewSet):
