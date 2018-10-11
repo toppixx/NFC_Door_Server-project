@@ -326,10 +326,12 @@ class NfcListOfUsers(models.Model):
                         print("iv:\t\t" + iv)
                         print("encryptionKey:\t" + encryptionKey)
                         print("cipherText:\t" + str(cipherText.hex().upper()))
-                        print("plainText:\t" + str((plainTxtDecrypt.decode('ascii'))))
+                        try:
+                            print("plainText:\t" + str((plainTxtDecrypt.decode('ascii'))))
+                        except UnicodeDecodeError:
+                            return "decryption failed"
                         print("UTID:\t\t" + str(key.keyUTID ))
                         print("------------------------------------------------------------------------")
-
                         for door in self.listOfDoors.all():
                             if door.doorUDID == self.accesingUDID and key.keyUTID== plainTxtDecrypt.decode('ascii'):
                                 print("------------------------------------------------------------------------")
