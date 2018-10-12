@@ -129,10 +129,10 @@ class NfcKey(models.Model):
 
     def getId(self):
         return self.id
-    # def __str__(self):
-    #
-    #     """django useses this when it need to convert the object to a string"""
-    #     return  str(self.keyName)
+    def __str__(self):
+
+        """django useses this when it need to convert the object to a string"""
+        return  str(self.keyName)
     def getInternalUUID(self):
         print(self.internalUUID)
         print(re.sub('-', '',str(self.internalUUID)))
